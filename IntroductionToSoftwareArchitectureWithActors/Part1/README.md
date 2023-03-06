@@ -30,9 +30,6 @@ An _actor_ is an entity consisting of _behavior_ (code) and _state_ (data) that 
 One (heretical) generalization one could make is that _every (web) service is, in essence, an actor_, for its memory cannot be directly accessed from outside the process and its only means of communication is via asynchronous IP packets.
 
 Points of interest:
-
-
-
 1. The state (memory) of an actor can be accessed by none but the owner actor (meaning that all the data is private).
 2. An actor is a finite-state machine that reacts to incoming messages.
 3. If an actor is single-threaded and does not call nondeterministic functions (provided by the OS or libraries), its behavior is deterministic (an actor in a defined initial state will always produce identical sequences of outgoing messages when provided with identical sequences of incoming messages), allowing _event sourcing_ [[MP](#MP), [DDIA](#DDIA)] and [the replay of bugs and crashes](http://ithare.com/chapter-vc-modular-architecture-client-side-on-debugging-distributed-systems-deterministic-logic-and-finite-state-machines/) under a debugger once events in the system have been logged.
@@ -114,16 +111,11 @@ Actors may share address space (running in the same process), hardware (running 
   </tr>
 </table>
 
-
-![alt_text](images/image1.png "image_tooltip")
-
+![Direct call, message, RPC](./Calls.png "Interactions between objects and actors")
 
 When interacting, objects _call_ objects synchronously (like a phone call or face-to-face talk in real life) – they reside in the same thread of execution. Actors, on the other hand, live in independent threads and _send_ each other asynchronous notifications (akin to SMSes or emails). As per usual, there is a middle ground: a _Remote Procedure Call_ is where an object sends a request message to an actor and waits for the actor’s response message (analogous to the operation performed in instant messengers). The benefit of an RPC is that the programming _inside the calling object_ is as simple as it would be with ordinary synchronous calls. However, this type of messaging also makes the system slower, and waiting for a message causes everything to hang in cases where the target actor crashes. Thus, the mixed case is a compromise, one of many that will appear in the following parts of this cycle.
 
 The diagram shows that:
-
-
-
 1. Direct calls (objects) belong to a single thread, and the entire use case looks simpler than it does when implemented in other paradigms.
 2. With message passing (actors), the client thread becomes ready for new use cases faster than it does with other approaches, as the code never blocks on external modules.
 3. With message passing (actors), the services do their tasks simultaneously.
@@ -132,9 +124,6 @@ The diagram shows that:
 Both objects and actors are _modules_ (or what used to be called _services_). Thus, a natural question to ask is: Which type of module is preferable for system decomposition: objects or actors? Or is it better to mix together synchronous and asynchronous interfaces, as is often found with modern microservices?
 
 Objects have long been (and now are, for simple systems) the default solution; they are easy to debug, as the system is synchronous and, if single-threaded, deterministic (replayable). Nevertheless, there are some cases where asynchronous actors are preferable:
-
-
-
 1. When several tasks should run in parallel to make sure that the system is able to respond to simultaneous external events, or that it is able to benefit from multiple CPU cores. The use of multithreading with objects negates the simplicity of development with the object model, while synchronization tends to inhibit efficient CPU utilization.
 2. When the system is shaped by opposing _forces_ [[MP](#MP)] (non-functional requirements). For example, it needs to both process huge files / run long calculations and handle interrupts / play animations. It is possible to poll for interrupts (or check the system time to render the animation frames) at some points of a long calculation’s loop, but such a single-threaded approach will interleave and make the code implementing both tasks (long calculation and real-time animation) ugly. It is much more convenient to split the tasks that are formed by conflicting forces (e.g., a long task vs a periodic real-time task) into subsystems that work independently – actors. In that case, the calculation will run in a background thread while the animation uses a higher priority foreground thread that wakes up (possibly interrupting the background calculation on a single-core CPU) when yet another frame needs to be rendered.
 3. When there is a need for very fast reactions to external events, which is an unlikely achievement with large synchronized code bases (monoliths) or
@@ -156,14 +145,12 @@ But cruel reality strikes again with _non-functional requirements_, making modul
 
 In the unlucky case that an architect becomes overly enthusiastic and transgresses the Tao, there is a further step into the brave new world of **ravioli** (aka atoms or nanoservices) that lacks synchronous interactions. It resembles physical reality; all interactions are notifications.
 
-
-
-![alt_text](images/image2.png "image_tooltip")
-
+![Types of systems](./Dichotomy.png "Types of systems")
 
 _As a side note, a well written monolith has better throughput (computing efficiency per CPU core), while actors allow for better responsiveness (easy coding for real-time actions)._
 
 ## Complexity
+
 **Complexity** can be described as the measure of how hard it is to change a system in a desired way (such as adding a new feature or bugfix) without introducing unexpected behavioral changes (i.e. bugs). Generally, as a domain model grows, its complexity increases superlinearly, which means that for any limited cognitive abilities, there is some humble project size that comprises the comfort zone in terms of providing development or support. Any attempts to force one’s way out of that zone have a very high risk of introducing random effects (bugs), causing burnout, and are [sure to take a crazy amount of time](https://goomics.net/374/) (See _monolithic hell_ in [[MP](#MP)]). There are several views on the nature of complexity:
 
 ### Dev / Ops
@@ -205,10 +192,7 @@ The common wisdom is to aim for _low coupling, high cohesion_. Low coupling is a
 
 Let’s compare the measures of complexity for the different kinds of systems:
 
-
-
-![alt_text](images/image3.png "image_tooltip")
-
+![Complexity](./Complexity.png "Complexity")
 
 It appears that large projects, where complexity hits hard, should ideally stick to the middle ground between modular OOP and asynchronous actors. This common wisdom is called **Microservices**, where synchronous OOP (modularity) controls complexity inside each service while asynchronous interfaces keep the services separate and autonomous.
 
@@ -216,9 +200,6 @@ It appears that large projects, where complexity hits hard, should ideally stick
 Yet another factor adding to the success of microservice architectures in case of a thoughtful use (as _[‘Think’ is not a four-letter word](http://www.dietmar-kuehl.de/mirror/c++-faq/big-picture.html#faq-6.16)_ thinking may help elude rules (ideally – any rules; in reality – the rules that are not applicable in one’s case)) is the relative ease of distributing microservice systems as opposed to distributing modular applications over _physically_ _independent_ servers.
 
 A **distributed system** is a system where the components involved rarely if ever have means for efficiently accessing the memory (state) of other components. Technically, there is no difference between the artificial access restriction for actors living in the same process and the intrinsic restriction for service processes residing on separate servers connected by a network. In reality, the network adds the possibility of connectivity failures, crashes and system time variation [[DDIA](#DDIA)]. Nevertheless, the properties of a distributed system do not really depend on the way its distribution is implemented, as:
-
-
-
 1. There are multiple logically (and usually also physically) simultaneous actions in a system – every component is doing its own task.
 2. The interaction of components is (often very) expensive compared to actions inside a component.
 3. The synchronization of several components’ states is prohibitively expensive, meaning that under normal conditions, no component may know the _current_ state of any other component.
