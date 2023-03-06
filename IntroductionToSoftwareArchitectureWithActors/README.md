@@ -1,6 +1,6 @@
 # Introduction to Software Architecture with Actors
 
-#####Table of Contents
+##### Table of Contents
 
 **[Part 1](./Part1/README.md) – On Complexity**: Actors and Objects; Complexity and Distributability; Variants of Actors.
 

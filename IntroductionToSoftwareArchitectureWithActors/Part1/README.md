@@ -11,10 +11,10 @@ The modern literature on distributed architectures deals with testing pyramids, 
   - [Actors vs Objects](#actors-vs-objects)
 - [Types of Systems](#types-of-systems)
 - [Complexity](#complexity)
-  - [Dev / Ops](#dev-ops)
-  - [Order / Chaos](#order-chaos)
-  - [Inherent / Accidental](#inherent-accidental)
-  - [Coupling / Cohesion](#coupling-cohesion)
+  - [Dev / Ops](#dev--ops)
+  - [Order / Chaos](#order--chaos)
+  - [Inherent / Accidental](#inherent--accidental)
+  - [Coupling / Cohesion](#coupling--cohesion)
 - [Distributability](#distributability)
   - [When to Distribute](#when-to-distribute)
 - [Variations of Actors](#variations-of-actors)
@@ -294,6 +294,8 @@ Next, let’s look inside an actor. To be continued…
 
 ## References
 
+<a name="DDD"/>
+
 [DDD] Domain-Driven Design: Tackling Complexity in the Heart of Software. _Eric Evans. Addison-Wesley (2003)._
 
 <a name="DDIA"/>
@@ -302,11 +304,11 @@ Next, let’s look inside an actor. To be continued…
 
 <a name="EIP"/>
 
-[EIP] Enterprise Integration Patterns._ Gregor Hohpe and Bobby Woolf. Addison-Wesley (2003)._
+[EIP] Enterprise Integration Patterns. _Gregor Hohpe and Bobby Woolf. Addison-Wesley (2003)._
 
 <a name="MP"/>
 
-[MP] Microservices Patterns: With Examples in Java. _Chris Richardson._ _Manning Publications (2018)_.
+[MP] Microservices Patterns: With Examples in Java. _Chris Richardson. Manning Publications (2018)_.
 
 <a name="POSA2"/>
 
@@ -318,7 +320,7 @@ Next, let’s look inside an actor. To be continued…
 
 ---
 
-_Editor: _[Josh Kaplan](mailto:joshkaplan66@gmail.com)
+_Editor:_ [Josh Kaplan](mailto:joshkaplan66@gmail.com)
 
 
 _[Part](../README.md)_ **1** 2 3 4 5
