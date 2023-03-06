@@ -1,14 +1,16 @@
 _[Part](../README.md)_ 1 **2** 3 4 5
 
+---
+
 # Introduction to Software Architecture with Actors: Part 2 – On Handling Messages
 
 After defining actors and traversing the _design space_ [[POSA1](#POSA1), [POSA5](#POSA5)] for systems built of actors, it is time to look inside an actor to find out how it may work. However, first we’ll need to make a distinction between _control_ _flow_ and _data flow_.
 
 - [Control Flow vs Data Flow](#control-flow-vs-data-flow)
 - [Monolith](#monolith)
-  - [Reactor (synchronous calls)](#reactor)
-  - [Proactor (asynchronous messages)](#proactor)
-  - [Half-Sync/Half-Async (coroutine-based reactor)](#half-sync-half-async)
+  - [Reactor (synchronous calls)](#reactor-posa2-synchronous-calls)
+  - [Proactor (asynchronous messages)](#proactor-posa2-asynchronous-messages)
+  - [Half-Sync/Half-Async (coroutine-based reactor)](#half-synchalf-async-posa2-coroutine-based-reactor)
   - [A mixed case](#a-mixed-case)
 - [Request State](#request-state)
 - [Summary](#summary)
@@ -143,25 +145,25 @@ _Drawbacks:_
 * If anything crashes, everything crashes (Users only have so much patience).
 
 _Evolution_:
-* If the <span style="text-decoration:underline;">business logic becomes unmanageable because of the project’s size</span>, the monolith should be split into asynchronous _(Micro-)Services_, described in Part 3. This may also help with <span style="text-decoration:underline;">scalability</span>.
-* The <span style="text-decoration:underline;">business logic can be isolated</span> from the underlying platform, transports and 3rd party libraries by applying _Layers_ (from Part 3 of this series), followed by _Hexagonal Architecture_ (described in Part 4). This also has a limited positive effect on the <span style="text-decoration:underline;">project complexity</span> and improves <span style="text-decoration:underline;">testability</span>. Another good option is going for _Pipeline_ (Part 3), but that architecture only fits a specific subset of applications. 
-* <span style="text-decoration:underline;">Scalability</span> and <span style="text-decoration:underline;">fault tolerance</span> are achieved firstly by _sharding_ (Part 3), with finer control being possible through the use of such granular architectures as _Pipeline_ (Part 3), _SOA_ (Part 5) or even _Nanoservices_ (Part 3).
-* <span style="text-decoration:underline;">Contradictory non-functional requirements</span> will lead to the fragmentation of the monolith into _Layers_ (Part 3), _Hexagonal Architecture_ (Part 4) and _Hexagonal Hierarchy_ (Part 5) or _(Micro-)Services_ (Part 3), probably over a _Shared Repository_ (Part 4), that may grow into a _Cell-Based Architecture_ (Part 5). Less common options include _Nanoservices_ (Part 3) and _SOA_ (Part 5).
-* <span style="text-decoration:underline;">Customizability</span> is achieved with _Plug-Ins_ or _Domain-Specific Language_ (both from Part 4). _Pipeline_ (Part 3) is also a good option if it fits the project’s domain.
+* If the business logic becomes unmanageable because of the project’s size, the monolith should be split into asynchronous _(Micro-)Services_, described in Part 3. This may also help with scalability.
+* The business logic can be isolated from the underlying platform, transports and 3rd party libraries by applying _Layers_ (from Part 3 of this series), followed by _Hexagonal Architecture_ (described in Part 4). This also has a limited positive effect on the project complexity and improves testability. Another good option is going for _Pipeline_ (Part 3), but that architecture only fits a specific subset of applications. 
+* Scalability and fault tolerance are achieved firstly by _sharding_ (Part 3), with finer control being possible through the use of such granular architectures as _Pipeline_ (Part 3), _SOA_ (Part 5) or even _Nanoservices_ (Part 3).
+* Contradictory non-functional requirements will lead to the fragmentation of the monolith into _Layers_ (Part 3), _Hexagonal Architecture_ (Part 4) and _Hexagonal Hierarchy_ (Part 5) or _(Micro-)Services_ (Part 3), probably over a _Shared Repository_ (Part 4), that may grow into a _Cell-Based Architecture_ (Part 5). Less common options include _Nanoservices_ (Part 3) and _SOA_ (Part 5).
+* Customizability is achieved with _Plug-Ins_ or _Domain-Specific Language_ (both from Part 4). _Pipeline_ (Part 3) is also a good option if it fits the project’s domain.
 
 It is noteworthy that the fact that “If anything crashes, everything crashes” is both a benefit and a drawback. Software architecture is all about making decisions with important benefits and ignorable drawbacks, while what exactly counts as important or ignorable depends on the project. That also holds true for the simplicity of software design – monoliths are easy to start coding, but as the project grows, they become hard to maintain and evolve. One should choose one’s method based on what is important now and what is expected to be important in the future. Everything has a cost.
 
-_<span style="text-decoration:underline;">Common names</span>_: **[Big Ball of Mud](https://martinfowler.com/bliki/MonolithFirst.html)**, Hello World, KISS + YAGNI.
+_Common names_: **[Big Ball of Mud](https://martinfowler.com/bliki/MonolithFirst.html)**, Hello World, KISS + YAGNI.
 
-_<span style="text-decoration:underline;">Software architecture</span>_: **Reactor** [[POSA2](#POSA2)], Proactor [[POSA2](#POSA2)], Half-Sync/Half-Async [[POSA2](#POSA2)].
+_Software architecture_: **Reactor** [[POSA2](#POSA2)], Proactor [[POSA2](#POSA2)], Half-Sync/Half-Async [[POSA2](#POSA2)].
 
-_<span style="text-decoration:underline;">System architecture</span>_: **Monolith**.
+_System architecture_: **Monolith**.
 
 Basically, any unstructured (for the current discussion, meaning “not divided by asynchronous interfaces”) code belongs here. This is usually good (simple and stupid) for a small amount of code without any special requirements.
 
 Handling an incoming request/event triggers a chain of data processing operations (_data flow_) or a choice of reactions (_control flow_) that can be implemented as either _Reactor_ or _Proactor_, which can also be mixed in a couple of ways (as is common with software architecture).
 
-### Reactor (synchronous calls) [[POSA2](#POSA2)]
+### Reactor [[POSA2](#POSA2)] (synchronous calls)
 
 
 ![alt_text](images/image3.png "image_tooltip")
@@ -189,7 +191,7 @@ _Drawbacks (multi-threaded variation):_
 
 Though multithreaded reactors are common for backends, [hardware](http://ithare.com/chapter-vd-modular-architecture-client-side-client-architecture-diagram-threads-and-game-loop/) and [database](http://ithare.com/multi-coring-and-non-blocking-instead-of-multi-threading-with-a-script/3/) adapters often need to be single-threaded in order to both protect the managed device from conflicting requests and optimize its performance. In that case, the reactor blocks for the duration of the hardware’s processing of the request, and as soon as it gets a response from the hardware, the reactor proceeds with accepting and running the next request for the wrapped device.
 
-### Proactor (asynchronous messages) [[POSA2](#POSA2)]
+### Proactor [[POSA2](#POSA2)] (asynchronous messages)
 
 
 ![alt_text](images/image4.png "image_tooltip")
@@ -298,8 +300,8 @@ In the subsequent installments, we’ll investigate the ways to split a monolith
 
 _Editor:_ [Josh Kaplan](mailto:joshkaplan66@gmail.com)
 
-
 _[Part](../README.md)_ 1 **2** 3 4 5
 
+---
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.

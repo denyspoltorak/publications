@@ -1,5 +1,7 @@
 _[Part](../README.md)_ **1** 2 3 4 5
 
+---
+
 # Introduction to Software Architecture with Actors: Part 1 – On Complexity
 
 _Actors_ have been known for quite a while ([1973](https://en.wikipedia.org/wiki/Actor_model)) and have seen wide use in real-time (embedded, telecom, and gamedev) systems. Moreover, modern event-driven architectures fit the definition of actor systems, indicating that actors appear to have been (recently) reinvented. It even seems that OOP was [originally defined](https://youtu.be/bo5WL5IQAd0?t=2472) through [objects interacting via events](https://en.wikipedia.org/wiki/Simula#Simulation), which made these early objects behave like actors. With the wider industrial adaptation of objects, people found that it was far easier to write business logic as a series of synchronous method calls rather than use message passing, redefining the concept of an object and forgetting about actors until distributed systems became mainstream.
@@ -303,8 +305,8 @@ Next, let’s look inside an actor. To be continued…
 
 _Editor:_ [Josh Kaplan](mailto:joshkaplan66@gmail.com)
 
-
 _[Part](../README.md)_ **1** 2 3 4 5
 
+---
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
