@@ -147,7 +147,7 @@ In the unlucky case that an architect becomes overly enthusiastic and transgress
 
 ![Types of systems](./Dichotomy.png "Types of systems")
 
-_As a side note, a well written monolith has better throughput (computing efficiency per CPU core), while actors allow for better responsiveness (easy coding for real-time actions)._
+> _As a side note, a well written monolith has better throughput (computing efficiency per CPU core), while actors allow for better responsiveness (easy coding for real-time actions)._
 
 ## Complexity
 
