@@ -20,17 +20,13 @@ After defining actors and traversing the _design space_ [[POSA1](#POSA1), [POSA5
 
 All software processes incoming information to produce outgoing information.
 
-
-![alt_text](images/image1.png "image_tooltip")
-
+![Message processing](./Monolith.png "Message processing")
 
 If a piece of software does not produce anything, it serves no purpose. The information a piece of software works on can be either **_data_** (a sequence of signals in a hardware bus) or **_events_** (signals in a hardware bus coming at specific moments). The systems that process these two kinds of information have distinct properties.
 
 Let’s compare a camera and a cell phone.
 
-
-![alt_text](images/image2.png "image_tooltip")
-
+![A camera and a phone](./Camera_and_Phone.png "A camera and a phone")
 
 A camera exists to stream data from its matrix to either its display or a flash card. The process may be something like:
 
@@ -165,9 +161,7 @@ Handling an incoming request/event triggers a chain of data processing operation
 
 ### Reactor [[POSA2](#POSA2)] (synchronous calls)
 
-
-![alt_text](images/image3.png "image_tooltip")
-
+![Reactor](./Reactor_merged.png "Reactor")
 
 > _(Parallel use cases are shown in colors)_
 
@@ -193,9 +187,7 @@ Though multithreaded reactors are common for backends, [hardware](http://ithare.
 
 ### Proactor [[POSA2](#POSA2)] (asynchronous messages)
 
-
-![alt_text](images/image4.png "image_tooltip")
-
+![Proactor](./Proactor_merged.png "Proactor")
 
 **_Multitasking without multithreading – reactive programming._** A single thread handles all the events: the incoming requests and the responses from the underlying hardware or libraries. All the outgoing communication is asynchronous (even reading/writing to HDDs); thus, the thread never blocks, every event is processed extremely quickly, the single thread is enormously productive and responsive, and resource usage stays low. It is even possible to keep the proactor thread warm (busy waiting on the event queue) to improve the response time. The proactor’s state does not need to be protected by mutexes (as there is only one thread inside the proactor).
 
@@ -220,9 +212,7 @@ _Drawbacks:_
 
 ### Half-Sync/Half-Async [[POSA2](#POSA2)] ([coroutine-based reactor](http://ithare.com/multi-coring-and-non-blocking-instead-of-multi-threading-with-a-script/2/))
 
-
-![alt_text](images/image5.png "image_tooltip")
-
+![Half-Sync/Half-Async](./HalfSync_merged.png "Half-Sync/Half-Async")
 
 > _(The periods of time when the CPU serves another stack are grayed out)_
 
@@ -253,9 +243,7 @@ _Half-Sync/Half-Async_ is more complex than both _Reactor_ and _Proactor_, but i
 
 ### A mixed case
 
-
-![alt_text](images/image6.png "image_tooltip")
-
+![A mixed case](./Mix_picture.png "A mixed case")
 
 Some outgoing requests (like writing to an SSD or communicating over Thunderbolt) are quick and blocking, while others are asynchronous. Combining blocking and non-blocking calls has been [described](http://ithare.com/multi-coring-and-non-blocking-instead-of-multi-threading-with-a-script/2/) as an optimization that minimizes the amount of context switching and simplifies the high-level code. The same approach often seems to be used in microservice systems, where communication between a microservice and its database may be synchronous while the microservices send asynchronous messages to each other.
 
