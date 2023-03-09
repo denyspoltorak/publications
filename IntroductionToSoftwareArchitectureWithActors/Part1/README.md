@@ -8,7 +8,6 @@ _Actors_ have been known for quite a while ([1973](https://en.wikipedia.org/wiki
 
 The modern literature on distributed architectures deals with testing pyramids, fault tolerance, and the selection of middleware and databases, as well as other important nuances of practicality. However, the very basic idea that the structure of a system defines its properties and applicability was mostly lost amidst the details of implementation. In the quest to regain it, actors may serve as an intuitive model with a single type of interaction. All the extraneous details are thereby discarded; the properties of an actor system don’t depend to any great degree on whether the actors belong to a single process or are spread over multiple servers.
 
-##### Table of Contents
 - [What is an Actor](#what-is-an-actor)
   - [Actors vs Objects](#actors-vs-objects)
 - [Types of Systems](#types-of-systems)

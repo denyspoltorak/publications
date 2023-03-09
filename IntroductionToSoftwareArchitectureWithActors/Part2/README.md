@@ -264,11 +264,11 @@ In the subsequent installments, we’ll investigate the ways to split a monolith
 
 ## References
 
-<a name="POSA2"/>
+<a name="DDIA"/>
 
 [DDIA] Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems. _Martin Kleppmann. O’Reilly Media, Inc. (2017)._
 
-<a name="DDIA"/>
+<a name="MP"/>
 
 [MP] Microservices Patterns: With Examples in Java. _Chris Richardson._ _Manning Publications (2018)_.
 
