@@ -9,8 +9,8 @@ After having looked into the ways events are processed inside individual actors,
 - [The Coordinate System](#the-coordinate-system)
 - [Shards / Instances](#shards--instances)
   - [Create on Demand (elastic instances)](#create-on-demand-elastic-instances)
-  - [Leader/Followers (self-managing instances)](#leader-followers-posa2-self-managing-instances)
-  - [Load Balancer, aka Dispatcher (external dispatch)](#load-balancer-aka-dispatcher-posa1)
+  - [Leader/Followers (self-managing instances)](#leaderfollowers-posa2-self-managing-instances)
+  - [Load Balancer, aka Dispatcher (external dispatch)](#load-balancer-aka-dispatcher-posa1-external-dispatch)
   - [Mixtures](#mixtures)
 - [Layers](#layers-posa1)
   - [Multi-tier System](#multi-tier-system)
@@ -207,7 +207,7 @@ Yet another example may probably be found in _orchestrator_ [[MP](#MP)] (see Par
 
 **_Divide by functionality_**. An initial monolith is cut into actors that cover individual subdomains, with the expectation that most use cases don’t cross subdomain borders.
 
-_Benefits_: \
+_Benefits_:
 * Decoupling subdomains is the only scalable way to reduce the code complexity, as the division results in pieces of more or less equal sizes. 
 * Coding and debugging for an individual subdomain is easy, even when the high-level logic is strongly coupled to low-level details.
 * The subdomains’ logic is kept loosely coupled for the duration of the project (i.e. modularity is not violated), as it is extremely hard to hack around a messaging interface even under pressure from management.
@@ -217,14 +217,14 @@ _Benefits_: \
 * The subdomain actors may be deployed independently.
 * Use cases that don’t cross subdomain borders (i.e., are limited to one subdomain) are very fast.
 
-_Drawbacks_: \
+_Drawbacks_:
 * Use cases that involve logic or data from several subdomains are very hard to code and debug.
 * If several services depend on a shared dataset, the data often needs to be replicated for each service, and the replicas (_views_ [[DDIA](#DDIA)]) should be kept synchronized.
 * The system’s responsiveness and throughput deteriorate for system-wide use cases (that involve several subdomains).
 * Services are left interdependent by contract (_choreography_ [[MP](#MP)]) unless there is a shared layer for coordinating inter-service communication and system-wide use cases (see Part 4 for multiple examples).
 * Integration / operations / system administration complexity emerges.
 
-_Evolution_: \
+_Evolution_:
 * Should individual services grow too large and complex, causing _monolithic hell_ [[MP](#MP)], they should be split into smaller services, likely transferring the system to _Cell-Based Architecture_ (Part 5). There are also the more dubious options of _Application Service_ (Part 4) and _Service-Oriented Architecture_ (Part 5).
 * Having too many connections between services can be alleviated by introducing _Middleware_ (Part 4) or refactoring to _Cell-Based Architecture_ (Part 5).
 * Protecting the business logic from the environment is achievable in the following ways: the whole system of services can be encapsulated with _Gateway_ (Part 4), while _Hexagonal Architecture_ (also from Part 4) can be applied to isolate the business logic of the individual services from third-party components.
