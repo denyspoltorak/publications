@@ -31,15 +31,15 @@ This article investigates multiple ways of combining **layers** and **services**
   - [Gateway (system model over domain services)](#gateway-mp-system-model-over-domain-services)
   - [Application Service (domain model over domain services)](#application-service-domain-model-over-domain-services)
 - [U-shaped systems](#U-shaped-systems)
-  - [Middleware (domain services over a system model)](#middleware-domain-services-over-system-model)
-  - [Shared Repository (domain services over a domain data model)](#shared-repository-posa4-domain-services-over-a domain-data-model)
+  - [Middleware (domain services over a system model)](#middleware-domain-services-over-a-system-model)
+  - [Shared Repository (domain services over a domain data model)](#shared-repository-posa4-domain-services-over-a-domain-data-model)
   - [Plug-ins (domain services over a domain model)](#plug-ins-sap-domain-services-over-a-domain-model)
 - [H-shaped systems](#H-shaped-systems)
   - [Microkernel](#microkernel-posa1)
   - [Domain-Specific Language (DSL)](#domain-specific-language-dsl)
   - [Orchestrators](#orchestrators-mp)
 - [Miscellaneous architectures](#miscellaneous-architectures)
-  - [(Re)Actor-with-Extractors (Day and Night)](#re-actor-with-extractors-day-and-night)
+  - [(Re)Actor-with-Extractors (Day and Night)](#reactor-with-extractors-day-and-night)
 - [Summary](#summary)
 - [References](#references)
 
@@ -501,7 +501,7 @@ The next (and final) part is dedicated to fragmented architectures that contain 
 
 <a name="EIP"/>
 
-[EIP] Enterprise Integration Patterns._ Gregor Hohpe and Bobby Woolf. Addison-Wesley (2003)._
+[EIP] Enterprise Integration Patterns. _Gregor Hohpe and Bobby Woolf. Addison-Wesley (2003)._
 
 <a name="GoF"/>
 
@@ -509,7 +509,7 @@ The next (and final) part is dedicated to fragmented architectures that contain 
 
 <a name="MP"/>
 
-[MP] Microservices Patterns: With Examples in Java. _Chris Richardson._ _Manning Publications (2018)_.
+[MP] Microservices Patterns: With Examples in Java. _Chris Richardson. Manning Publications (2018)_.
 
 <a name="POSA1"/>
 
