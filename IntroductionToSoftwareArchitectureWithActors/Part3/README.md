@@ -26,9 +26,7 @@ After having looked into the ways events are processed inside individual actors,
 
 ## The Coordinate System
 
-
-![alt_text](images/image1.png "image_tooltip")
-
+![A sample structural diagram for a game](./Game.png "A sample structural diagram for a game")
 
 The remaining parts of the publication examine the relation between structural diagrams (drawings of components and their interactions) for common types of systems of actors/services and the properties of those systems. The following coordinates, abbreviated as **_ASS_,** will be used consistently:
 * The vertical axis maps **_abstraction_** – upper parts are more abstract (high-level business logic in Python or DSL), whereas lower parts are implementation-specific (device drivers in C or highly optimized library data structures). Users pay for the higher levels of the software and don’t care about the low-level implementation unless something there goes wrong. The upper modules rely on the lower ones.
@@ -43,9 +41,7 @@ In some cases, it will be convenient to weaken the actors model by also covering
 
 ## Shards / Instances
 
-
-![alt_text](images/image2.png "image_tooltip")
-
+![A structural diagram for Shards](./Shards.png "A structural diagram for Shards")
 
 **_Multiple instances_**. A monolith is cut into functionally identical pieces that usually don’t interact. Alternatively, several identical instances (_shards_) of a monolith are combined into a system to serve user requests together.
 
@@ -91,18 +87,14 @@ I remember the next three approaches to dispatching the work among threads/insta
 
 ### Create on Demand (elastic instances)
 
-
-![alt_text](images/image3.png "image_tooltip")
-
+![An example of elastic instances](./Elastic_sharding.png "An example of elastic instances")
 
 The load (e.g. the number of simultaneous users for instance-per-user model) is unpredictable, or service instances may run on the client side. Create an instance as soon as a new client connects and delete it upon disconnect. This may be quite slow because of the instance creation overhead, and peak load may consume all the system resources, so new users will not be served. \
 _Examples_: frontend, call objects in a telephony server, user proxies in multiplayer games and coroutines in _Half-Sync/Half-Async_ from Part 2. A stateless multithreaded _Reactor_ (Part 2) also fits the definition of _Shards_, as threads cannot change each other’s state – this is yet another case of a system that matches the descriptions of several patterns.
 
 ### Leader/Followers [[POSA2](#POSA2)] (self-managing instances)
 
-
-![alt_text](images/image4.png "image_tooltip")
-
+![An example of Leader/Followers](./Leader_Followers.png "An example of Leader/Followers")
 
 The instances are pre-initialized (_pooling_) and linked into a list. One instance (the _leader_) is waiting on a socket, while other instances (_followers_) are idle. As soon as the leader receives a request, it yields the socket to its first follower and starts processing the popped message. The follower that receives the socket becomes the new leader and starts waiting on the socket for an incoming request. As soon as one of the old leaders that were processing messages finishes its work, it joins the end of the followers queue.
 
@@ -110,9 +102,7 @@ This makes some sense but does not scale between servers. Thus, a hardware failu
 
 ### Load Balancer, aka Dispatcher [[POSA1](#POSA1)] (external dispatch)
 
-
-![alt_text](images/image5.png "image_tooltip")
-
+![An example of Dispatcher](./Dispatcher.png "An example of Dispatcher")
 
 Some external service (Nginx or a hardware device) dispatches queries over an instance pool. This approach is scalable over multiple servers, but the balancer is the single point of failure.
 
@@ -126,9 +116,7 @@ Again, a couple of mixed cases are possible, e.g. when:
 
 ## Layers [[POSA1](#POSA1)]
 
-
-![alt_text](images/image6.png "image_tooltip")
-
+![A strctural diagram for Layers](./Layers.png "A strctural diagram for Layers")
 
 **_Separate the business logic from the implementation details._** The monolith is cut by messaging interfaces into pieces that model different abstraction levels. The uppermost level makes strategic decisions, whereas the lowest layer deals with the hardware.
 
@@ -163,9 +151,7 @@ Splitting into layers, like sharding, can be applied to monoliths, to individual
 
 As it usually happens, there are variants or corner cases:
 
-
-![alt_text](images/image7.png "image_tooltip")
-
+![Examples of layered systems](./Layers_examples.png "Examples of layered systems")
 
 ### Multi-tier System
 
@@ -201,9 +187,7 @@ Yet another example may probably be found in _orchestrator_ [[MP](#MP)] (see Par
 
 ## Services
 
-
-![alt_text](images/image8.png "image_tooltip")
-
+![A structural diagram for Services](./Services.png "A structural diagram for Services")
 
 **_Divide by functionality_**. An initial monolith is cut into actors that cover individual subdomains, with the expectation that most use cases don’t cross subdomain borders.
 
@@ -253,9 +237,7 @@ Traditionally, there are variants:
 
 _Domain Actors_ / _Microservices_ may be used for loosely coupled _data processing_ (enterprise) and _control_ (telecom) systems; see Part 2 for the distinction. 
 
-
-![alt_text](images/image9.png "image_tooltip")
-
+![A rollback of a failed saga](./Rollback_of_Saga.png "A rollback of a failed saga")
 
 When things go wrong (as they tend to do in real life), systems start to rely on distributed transactions, causing _sagas_ [[MP](#MP)] (rules for running system-wide transactions and rolling back failed ones) to be implemented. They may be _choreographed_ [[MP](#MP)] by hardwiring the task processing steps into services or _orchestrated_ [[MP](#MP)] by adding an extra business logic layer on top of the services. A choreographed logic is hard to understand, as a single use case is split over multiple code repositories, while an orchestrated logic adds a system-wide layer on top of the services; it is slower because more messaging is involved and may create a single point of failure.
 
@@ -263,9 +245,7 @@ For this and other practical reasons, real-world _microservice_ systems are usua
 
 ### Pipeline (Pipes and Filters [[POSA1](#POSA1)])
 
-
-![alt_text](images/image10.png "image_tooltip")
-
+![Structural diagrams for Pipelines](./Pipes_and_filters.png "Structural diagrams for Pipelines")
 
 **_Separate data processing steps_**. A special case of _Domain Actors_ (_Broker Topology_ [[SAP](#SAP)]), it is very specialized but widely used; while in most other patterns, participants may communicate in any direction, _Pipeline_ is limited to unidirectional data flow – every actor (called a _filter_ in this pattern) receives its input data from its input event pipe(s), processes the data and sends results to its output message pipe(s). A filter is usually responsible for a single step of the data processing and is kept small and simple.
 
@@ -292,9 +272,7 @@ Implementing feedback (_[congestion control](https://en.wikipedia.org/wiki/TCP_c
 
 ### Nanoservices (Event-Driven Architecture [[SAP](#SAP)])
 
-
-![alt_text](images/image11.png "image_tooltip")
-
+![A structural diagram for a CRUD implemented with Nanoservices](./Nanoservices.png "A structural diagram for a CRUD implemented with Nanoservices")
 
 **_Fine-grained actors for supreme fault tolerance, flexibility and scalability_**. _Event-Driven Architecture_ is an umbrella term for approaches that use some of the following features:
 * An actor (_event processor_) for each data processing step (stateless) or domain entity (stateful): the proper _Nanoservices_
