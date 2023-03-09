@@ -32,7 +32,7 @@ After having looked into the ways events are processed inside individual actors,
 
 The remaining parts of the publication examine the relation between structural diagrams (drawings of components and their interactions) for common types of systems of actors/services and the properties of those systems. The following coordinates, abbreviated as **_ASS_,** will be used consistently:
 * The vertical axis maps **_abstraction_** – upper parts are more abstract (high-level business logic in Python or DSL), whereas lower parts are implementation-specific (device drivers in C or highly optimized library data structures). Users pay for the higher levels of the software and don’t care about the low-level implementation unless something there goes wrong. The upper modules rely on the lower ones.
-* The horizontal axis resolves **_subdomains _**in an arbitrary order. Moreover, the subdomains along the axis may vary (belong to different domains) at different heights (abstraction levels); for example, at the lower (OS) level, there is network, HDD, video, sound, mouse and keyboard drivers/interfaces, while the upper application level may be concerned with players, monsters and spells, and on top of it resides yet another layer with metadata: game scores, achievements, player rooms, etc. These different dimensions of subdomains should have been shown along dedicated orthogonal axes, but the drawing has only two available dimensions, making it necessary to map all the subdomains to a single axis of the diagram. Nevertheless, this does not make the diagrams overly messy, as the different domains are usually found at diverse heights (abstraction levels mapped to layers of the system).
+* The horizontal axis resolves **_subdomains_** in an arbitrary order. Moreover, the subdomains along the axis may vary (belong to different domains) at different heights (abstraction levels); for example, at the lower (OS) level, there is network, HDD, video, sound, mouse and keyboard drivers/interfaces, while the upper application level may be concerned with players, monsters and spells, and on top of it resides yet another layer with metadata: game scores, achievements, player rooms, etc. These different dimensions of subdomains should have been shown along dedicated orthogonal axes, but the drawing has only two available dimensions, making it necessary to map all the subdomains to a single axis of the diagram. Nevertheless, this does not make the diagrams overly messy, as the different domains are usually found at diverse heights (abstraction levels mapped to layers of the system).
 * The Z-axis (which is hard to show in 2D and is thus directed diagonally) corresponds to **_sharding_** and shows multiple instances of modules. It is important for a few of the structures discussed and is omitted in other cases. 
 
 I believe such coordinates are [common](https://en.wikipedia.org/wiki/Glibc#/media/File:Linux_API.svg) in [OS](https://en.wikipedia.org/wiki/Rump_kernel#/media/File:OS_rumparch.png) and embedded systems diagrams, but I have never seen the axes being explicitly named.
@@ -55,13 +55,13 @@ In some cases, it will be convenient to weaken the actors model by also covering
 
 > _The best case is always the one that does not need processing. The green scenario in the figure above is very close to that: the shard gets a request, does some internal magic, and returns the response without having to deal with any outside modules, other shards included. This is possible if the shard owns all the information required for processing the events it gets assigned._
 
-_Benefits _(on top of those for _Monolith_ from Part 2):
+_Benefits_ (on top of those for _Monolith_ from Part 2):
 * Sharding allows for nearly unlimited (being wary of the size of the dataset and traffic bottlenecks) scalability under load (by spawning more instances).
-* Running multiple instances of an (ordinarily stateless) actor allows for synchronous calls (_Reactor _[[POSA2](#POSA2)] from Part 2), simplifying the implementation of the business logic. The fact that the actors block for the duration of running tasks is compensated for by the number of actor instances.
+* Running multiple instances of an (ordinarily stateless) actor allows for synchronous calls (_Reactor_ [[POSA2](#POSA2)] from Part 2), simplifying the implementation of the business logic. The fact that the actors block for the duration of running tasks is compensated for by the number of actor instances.
 * Fault tolerance – even if one instance crashes, the system still survives, and the unserved request may be forwarded to other instances, _except_ when the crash is reproducible – in that case, the request will crash all the actors it is forwarded to.
 * Support for _[Canary Release](https://martinfowler.com/bliki/CanaryRelease.html)_ – it is possible to deploy a few instances of a new version of an actor for testing in parallel to the main workforce of a previous stable version.
 
-Drawbacks (on top of those for _Monolith_ from Part 2):
+_Drawbacks_ (on top of those for _Monolith_ from Part 2):
 * Sharing data between shards is slower and gives rise to problems. Usually, the shards don’t know about each other, but see _Leader/Followers_ below and _Mesh_ in Part 5 for cases that rely on inter-shard communication. This drawback does not affect _stateless_ actors.
 * There must be an entity that dispatches requests to shards; thus, this entity is a single point of failure.
 * Deploying and managing multiple instances requires an extra administrative effort.
@@ -70,7 +70,7 @@ _Evolution_:
 * If there appear new use cases that require a shard to access data that belong to other shards, a _shared repository_ (Part 4) is the most obvious solution. The structural changes needed may involve unsharding the entire application back to _Monolith_ (Part 2), splitting the database into a shared layer (the proper _Shared Repository_ pattern from Part 4), or running the shards on top of a _Space-Based Architecture_ framework (Part 5). Yet another option is _Nanoservices_ (see below).
 * If in need of fine-grained scalability, splitting into _Nanoservices_ may be the best option for projects with small codebases, while for larger projects _(Micro-)Services_ (see below) or _Service-Oriented Architecture_ (described in Part 5) are more suitable.
 * Fault tolerance may be achieved by [replacing parts of the monolith](https://hillside.net/plop/2020/papers/yoder.pdf) with _Nanoservices_ under _Microkernel_ (Part 4).
-* Getting out of _monolithic hell _[[MP](#MP)] can likely be achieved through sharded _(Micro-)Services_, in a way similar to that for unsharded monoliths.
+* Getting out of _monolithic hell_ [[MP](#MP)] can likely be achieved through sharded _(Micro-)Services_, in a way similar to that for unsharded monoliths.
 
 _Summary_: sharding is a mostly free opportunity to scale a monolith to support higher load for isolated users or datasets of moderate size (before the database management or traffic control becomes non-trivial), though for larger systems, _Mesh_ (from Part 5) may be more appropriate. However, sharding is applicable only in cases where incoming requests may be binned to independent groups (i.e., no requests from one group touch the state that any other group writes to). \
 _Example_: a network file storage where every user gets their own folder. A given folder’s URL maps to a single shard responsible for serving the user.
@@ -81,7 +81,7 @@ _Common names_: **Instances**.
 
 _Software architecture_: **Pooling** [[POSA3](#POSA3)].
 
-_System architecture_: **Sharding**,** **CGI/fCGI, FaaS.
+_System architecture_: **Sharding**, CGI/fCGI, FaaS.
 
 Sharding is applicable to both monolithic applications and individual services or actors in more complex asynchronous systems. The latter case helps to remove bottlenecks in the system by creating more instances of the most heavily loaded modules than of modules under lower load, which results in an optimal use of resources.
 
@@ -108,7 +108,7 @@ The instances are pre-initialized (_pooling_) and linked into a list. One instan
 
 This makes some sense but does not scale between servers. Thus, a hardware failure will kill the entire system.
 
-### **Load Balancer, aka Dispatcher **[[POSA1](#POSA1)]** **(external dispatch)
+### Load Balancer, aka Dispatcher [[POSA1](#POSA1)] (external dispatch)
 
 
 ![alt_text](images/image5.png "image_tooltip")
@@ -121,7 +121,7 @@ Actually, this is a _layered_ system (see below), as the dispatcher and the shar
 ### Mixtures
 
 Again, a couple of mixed cases are possible, e.g. when:
-1. A_ Load Balancer _dispatches requests among servers that run _Leader/Followers _queues.
+1. A _Load Balancer_ dispatches requests among servers that run _Leader/Followers_ queues.
 2. All the instances on a server are waiting on an OS or framework object (e.g. a socket). An incoming request is assigned to one of the waiting instances. In this case, the _Load Balancer_ is implemented by the OS or the framework.
 
 ## Layers [[POSA1](#POSA1)]
@@ -135,7 +135,7 @@ Again, a couple of mixed cases are possible, e.g. when:
 _Benefits_:
 * All the subdomains in any given layer are cohesive (accessible via synchronous calls). For example, in a game, the code for a unit may easily get information about its environment and interact with other units. This also makes debugging markedly easier unless the control-/data-flow under investigation leaves the current layer.
 * The high-level logic is decoupled from the low-level code, e.g. a unit’s AI planner does not care about the unit’s rendering, as it is encapsulated with a messaging interface. This should (in theory) provide for more compact and readable code.
-* The high-level logic and the low-level code may have different properties (_quality attributes_ or_ “-ilities” _[[MP](#MP)]) to satisfy conflicting _non-functional requirements_. A unit’s AI may be busy planning (which is a single long calculation) its future actions for a couple of seconds, while a renderer should draw (a periodic real-time task) the unit every 15 ms.
+* The high-level logic and the low-level code may have different properties (_quality attributes_ or _“-ilities”_ [[MP](#MP)]) to satisfy conflicting _non-functional requirements_. A unit’s AI may be busy planning (which is a single long calculation) its future actions for a couple of seconds, while a renderer should draw (a periodic real-time task) the unit every 15 ms.
 * All the layers may be executed in parallel (a layer per CPU core). However, the load distribution is usually quite unbalanced, making whatever benefit that is gained insubstantial.
 * Layers that don’t possess a system-wide state may be independently sharded under load. For example, it is hard to shard a map (which is a unique shared resource), but it is practicable to shard the units’ AI planners (as they don’t interact directly).
 * The layers may be deployed independently (take OS updates as an example), though not without some [effort](https://kb.netgear.com/21853/What-is-the-dual-image-feature-and-how-does-it-work-with-my-managed-switch) in terms of architecture and implementation.
@@ -195,7 +195,7 @@ This structure is a mirror reflection of _Thread Pool_. Instead of dumb threads 
 
 The _coroutines_ of _Half-Sync/Half-Async_ (from Part 2) may be considered application instances over a shared service layer; even the “Half-/Half-” in the pattern’s name evokes the notion of layers. In fact, the pattern itself originally described the kernel and user space layers of OSes. 
 
-A backend with a _load balancer, _described in the _Shards_ section above, is also an example of the _Application Pool_ architecture; there is a minor low-level component nearly devoid of business logic that governs high-level application components (CGI).
+A backend with a _load balancer,_ described in the _Shards_ section above, is also an example of the _Application Pool_ architecture; there is a minor low-level component nearly devoid of business logic that governs high-level application components (CGI).
 
 Yet another example may probably be found in _orchestrator_ [[MP](#MP)] (see Part 4) frameworks.
 
@@ -207,7 +207,7 @@ Yet another example may probably be found in _orchestrator_ [[MP](#MP)] (see Par
 
 **_Divide by functionality_**. An initial monolith is cut into actors that cover individual subdomains, with the expectation that most use cases don’t cross subdomain borders.
 
-_Benefits_:
+_Benefits_: \
 * Decoupling subdomains is the only scalable way to reduce the code complexity, as the division results in pieces of more or less equal sizes. 
 * Coding and debugging for an individual subdomain is easy, even when the high-level logic is strongly coupled to low-level details.
 * The subdomains’ logic is kept loosely coupled for the duration of the project (i.e. modularity is not violated), as it is extremely hard to hack around a messaging interface even under pressure from management.
@@ -217,14 +217,14 @@ _Benefits_:
 * The subdomain actors may be deployed independently.
 * Use cases that don’t cross subdomain borders (i.e., are limited to one subdomain) are very fast.
 
-_Drawbacks_:
+_Drawbacks_: \
 * Use cases that involve logic or data from several subdomains are very hard to code and debug.
 * If several services depend on a shared dataset, the data often needs to be replicated for each service, and the replicas (_views_ [[DDIA](#DDIA)]) should be kept synchronized.
 * The system’s responsiveness and throughput deteriorate for system-wide use cases (that involve several subdomains).
 * Services are left interdependent by contract (_choreography_ [[MP](#MP)]) unless there is a shared layer for coordinating inter-service communication and system-wide use cases (see Part 4 for multiple examples).
 * Integration / operations / system administration complexity emerges.
 
-_Evolution_:
+_Evolution_: \
 * Should individual services grow too large and complex, causing _monolithic hell_ [[MP](#MP)], they should be split into smaller services, likely transferring the system to _Cell-Based Architecture_ (Part 5). There are also the more dubious options of _Application Service_ (Part 4) and _Service-Oriented Architecture_ (Part 5).
 * Having too many connections between services can be alleviated by introducing _Middleware_ (Part 4) or refactoring to _Cell-Based Architecture_ (Part 5).
 * Protecting the business logic from the environment is achievable in the following ways: the whole system of services can be encapsulated with _Gateway_ (Part 4), while _Hexagonal Architecture_ (also from Part 4) can be applied to isolate the business logic of the individual services from third-party components.
@@ -237,7 +237,7 @@ _Evolution_:
 _Summary_: this kind of division is good for systems that feature mostly independent modules; otherwise, the implementation complexity and request processing time increases. \
 _Exception_: for huge projects, the division by subdomain is the only way to keep the total project complexity manageable. Even though many use cases become intrinsically more complex to implement and operational complexity may become untrivial, the splitting of a huge monolith into several asynchronous modules still removes much of the accidental complexity in the code and allows the resulting modules to be developed and deployed relatively independently, leading one out of _monolithic hell_ [[MP](#MP)].
 
-_Other ways to split a huge monolith don’t reduce the code complexity well enough: sharding does not change the code at all (as every instance includes the entire project’s codebase), while layered systems usually contain 3 to 5 uneven layers, with one of the upper layers still growing too large to be manageable and too cohesive to be split again. At the same time, dividing a project by subdomain boundaries may easily result in a dozen loosely coupled services of nearly uniform size, and it may be possible to recursively split those services into subsubdomains if the need arises. The system as a whole becomes slower and more complicated, but the individual components remain manageable. There is another similar, yet better, option, namely hierarchical decomposition (described in Part 5), but it is not applicable in most domains._
+> _Other ways to split a huge monolith don’t reduce the code complexity well enough: sharding does not change the code at all (as every instance includes the entire project’s codebase), while layered systems usually contain 3 to 5 uneven layers, with one of the upper layers still growing too large to be manageable and too cohesive to be split again. At the same time, dividing a project by subdomain boundaries may easily result in a dozen loosely coupled services of nearly uniform size, and it may be possible to recursively split those services into subsubdomains if the need arises. The system as a whole becomes slower and more complicated, but the individual components remain manageable. There is another similar, yet better, option, namely hierarchical decomposition (described in Part 5), but it is not applicable in most domains._
 
 _Common names_: **Actors** (embedded).
 
@@ -249,9 +249,9 @@ Traditionally, there are variants:
 
 ### Microservices (Domain Actors)
 
-**_Make subdomains independent. _**If a target domain can be divided into several subdomains, it is likely that the business logic inside each of the subdomains is more cohesive than it is between the subdomains, meaning that any given subdomain deals with its own state and functions much more often than it requires help from other subdomains. Tasks limited to a single subdomain are easy, those chaining (_fire and forget_) or multicasting notifications over several subdomains – acceptable, but once a task requires the coordination of and feedback from several subdomains – everything turns into a mess (see Part 1), as the subdomain actors are too independent. Not only do _views_ [[DDIA](#DDIA)] or _sagas_ [[MP](#MP)] emerge, but the task’s logic is likely to consist of multiple distributed pieces, possibly belonging to several code repositories, which makes troubleshooting the task as a whole very inconvenient, and its execution often inefficient. A system that mostly relies on such coordinated tasks is sometimes called a _distributed monolith_ [[MP](#MP)] (Part 5) and is usually considered to be the result of an architectural failure, namely incorrect subdomain boundaries or overly fine-grained services [[SAP](#SAP)]. It is recommended to [first build a monolith](https://martinfowler.com/bliki/MonolithFirst.html), then locate loosely coupled modules [[DDD](#DDD)] (possibly refactoring out redundant dependencies and moving pieces of code between modules), and only after the already running system has converged into a loosely coupled state can it be split into a set of microservices. Another option to reduce a monolith is by [separating the most loosely coupled services](https://hillside.net/plop/2020/papers/yoder.pdf) on an individual basis. This is a lengthy process, but it does not destabilize the whole project.
+**_Make subdomains independent._** If a target domain can be divided into several subdomains, it is likely that the business logic inside each of the subdomains is more cohesive than it is between the subdomains, meaning that any given subdomain deals with its own state and functions much more often than it requires help from other subdomains. Tasks limited to a single subdomain are easy, those chaining (_fire and forget_) or multicasting notifications over several subdomains – acceptable, but once a task requires the coordination of and feedback from several subdomains – everything turns into a mess (see Part 1), as the subdomain actors are too independent. Not only do _views_ [[DDIA](#DDIA)] or _sagas_ [[MP](#MP)] emerge, but the task’s logic is likely to consist of multiple distributed pieces, possibly belonging to several code repositories, which makes troubleshooting the task as a whole very inconvenient, and its execution often inefficient. A system that mostly relies on such coordinated tasks is sometimes called a _distributed monolith_ [[MP](#MP)] (Part 5) and is usually considered to be the result of an architectural failure, namely incorrect subdomain boundaries or overly fine-grained services [[SAP](#SAP)]. It is recommended to [first build a monolith](https://martinfowler.com/bliki/MonolithFirst.html), then locate loosely coupled modules [[DDD](#DDD)] (possibly refactoring out redundant dependencies and moving pieces of code between modules), and only after the already running system has converged into a loosely coupled state can it be split into a set of microservices. Another option to reduce a monolith is by [separating the most loosely coupled services](https://hillside.net/plop/2020/papers/yoder.pdf) on an individual basis. This is a lengthy process, but it does not destabilize the whole project.
 
-_Domain Actors_ / _Microservices_ may be used for loosely coupled _data processing_ (enterprise) and _control _(telecom) systems; see Part 2 for the distinction. 
+_Domain Actors_ / _Microservices_ may be used for loosely coupled _data processing_ (enterprise) and _control_ (telecom) systems; see Part 2 for the distinction. 
 
 
 ![alt_text](images/image9.png "image_tooltip")
@@ -259,7 +259,7 @@ _Domain Actors_ / _Microservices_ may be used for loosely coupled _data processi
 
 When things go wrong (as they tend to do in real life), systems start to rely on distributed transactions, causing _sagas_ [[MP](#MP)] (rules for running system-wide transactions and rolling back failed ones) to be implemented. They may be _choreographed_ [[MP](#MP)] by hardwiring the task processing steps into services or _orchestrated_ [[MP](#MP)] by adding an extra business logic layer on top of the services. A choreographed logic is hard to understand, as a single use case is split over multiple code repositories, while an orchestrated logic adds a system-wide layer on top of the services; it is slower because more messaging is involved and may create a single point of failure.
 
-For this and other practical reasons, real-world _microservice _systems are usually augmented with extra layers such as _Gateway_ [[MP](#MP)], _Orchestrators_ [[MP](#MP)], _Shared Database_, or _Message_ _Broker_ [[MP](#MP)] – all of which are described in Part 4 of the series, or are _Hierarchical_, with _Hexagonal_ or _Cell_ subsystems for services (Part 5).
+For this and other practical reasons, real-world _microservice_ systems are usually augmented with extra layers such as _Gateway_ [[MP](#MP)], _Orchestrators_ [[MP](#MP)], _Shared Database_, or _Message_ _Broker_ [[MP](#MP)] – all of which are described in Part 4 of the series, or are _Hierarchical_, with _Hexagonal_ or _Cell_ subsystems for services (Part 5).
 
 ### Pipeline (Pipes and Filters [[POSA1](#POSA1)])
 
@@ -288,7 +288,7 @@ _Common names_: **Pipes and Filters** [[POSA1](#POSA1)].
 
 _System architecture_: **Pipelines** [[DDIA](#DDIA)].
 
-Implementing feedback (_[congestion control](https://en.wikipedia.org/wiki/TCP_congestion_control)_) for highly loaded pipelines may require the filters to send back a confirmation for every processed packet, the number of packets in a pipe, or the number of packets that have already been processed. This effectively creates a system where _data_ and _control_ (feedback) packets flow in opposite directions. Another feedback option is to add a supervisor _middleware_ (Part 4) that collects throughput statistics and manages the quality/bitrate settings of the filters to avoid overloading the pipeline_._ A third feedback option is to make writing to a pipe block if the pipe is full [[POSA1](#POSA1)]. 
+Implementing feedback (_[congestion control](https://en.wikipedia.org/wiki/TCP_congestion_control)_) for highly loaded pipelines may require the filters to send back a confirmation for every processed packet, the number of packets in a pipe, or the number of packets that have already been processed. This effectively creates a system where _data_ and _control_ (feedback) packets flow in opposite directions. Another feedback option is to add a supervisor _middleware_ (Part 4) that collects throughput statistics and manages the quality/bitrate settings of the filters to avoid overloading the pipeline A third feedback option is to make writing to a pipe block if the pipe is full [[POSA1](#POSA1)]. 
 
 ### Nanoservices (Event-Driven Architecture [[SAP](#SAP)])
 
@@ -376,11 +376,11 @@ The next parts will cover divisions along both abstraction and subdomain dimensi
 
 <a name="EIP"/>
 
-[EIP] Enterprise Integration Patterns._ Gregor Hohpe and Bobby Woolf. Addison-Wesley (2003)._
+[EIP] Enterprise Integration Patterns. _Gregor Hohpe and Bobby Woolf. Addison-Wesley (2003)._
 
 <a name="MP"/>
 
-[MP] Microservices Patterns: With Examples in Java. _Chris Richardson._ _Manning Publications (2018)_.
+[MP] Microservices Patterns: With Examples in Java. _Chris Richardson. Manning Publications (2018)_.
 
 <a name="POSA1"/>
 
@@ -403,7 +403,7 @@ The next parts will cover divisions along both abstraction and subdomain dimensi
 _Editor:_ [Josh Kaplan](mailto:joshkaplan66@gmail.com)
 
  
-_Part_ 1 2 **3** 4 5
+_[Part](../README.md)_ 1 2 **3** 4 5
 
 ---
 
