@@ -55,9 +55,7 @@ Systems may feature a monolithic model with a high-level logic that relies on th
 
 ### Hexagonal Architecture (domain model over resource services)
 
-
-![alt_text](images/image1.png "image_tooltip")
-
+![A structural diagram for Hexagonal Architecture](./Hexagonal.png "A structural diagram for Hexagonal Architecture")
 
 > _(Business logic is shown in blue.)_
 
@@ -105,9 +103,7 @@ _System architecture_: **[Hexagonal Architecture](https://alistair.cockburn.us/h
 
 _The diagram does not look like Hexagonal Architecture!_ All the structural diagrams in this series are drawn in Cartesian _ASS_ coordinates (described in Part 3), whereas typical drawings for _Hexagonal Architecture_ use polar coordinates with reverse abstraction for distance and subdomain for angle:
 
-
-![alt_text](images/image2.png "image_tooltip")
-
+![Polar to Cartesian coordinates transformation for Hexagonal Architecture](./Hex_Coordinates_Vertical.png "Polar to Cartesian coordinates transformation for Hexagonal Architecture")
 
 In _control_ systems, the domain model tends to contain information about the last observed state of the system and the environment to base its decisions on. For example, in robotics, a control module should be able to synchronously access (read the cached data for) both the coordinates and velocities of all the manipulators and a 3D map of its environment to allow for the real time (in-RAM, without reading from the hardware) calculations of future actions.
 
@@ -121,9 +117,7 @@ A variant:
 
 #### Model-View-Controller [[POSA1](#POSA1)]
 
-
-![alt_text](images/image3.png "image_tooltip")
-
+![A structural diagram for Model-View-Controller](./MVC.png "A structural diagram for Model-View-Controller")
 
 **_Isolating the business logic from the UI._** Based on its original description wherein _view_ and _controller_ were adapters for a graphical interface, _MVC_ may be considered a special case of _Hexagonal Architecture_ with a unidirectional (_pipelined_) _control_ flow.
 
@@ -137,23 +131,17 @@ Noticeably, the two old famous architectural patterns that feature nearly identi
 
 The structural diagram for _MVC_ also bears a resemblance to the one for _Pipeline_ (Part 3); both feature unidirectional control flows and pairs of low-level components (_source_ and _sink_), though in _Pipeline_ architecture, the upper (business logic) layer contains multiple modules (_filters_). Thus, _Pipeline and Hexagonal Architecture are related_. If a project that was designed as a pipeline gets new requirements that make its _filters_ interdependent, or if there is a need for the ultimate optimization of performance and response time, the logic-containing _filters_ may be merged into a synchronous _model_, thus violating the original _Pipeline_ architecture and transforming it into a _Hexagonal Architecture_. Such an experience would mean that the original understanding of the project’s domain or forces (non-functional requirements) was incorrect, but, luckily, _Pipeline_ architecture is flexible enough to be reshaped at late stages of the project.
 
-
-![alt_text](images/image4.png "image_tooltip")
-
+![A transformation of Pipeline to Hexagonal Architecture](./Pipeline_to_Hexagonal.png "A transformation of Pipeline to Hexagonal Architecture")
 
 A [little more work](https://hillside.net/plop/2020/papers/poltorak.pdf) is needed to turn _domain actors_ (_Services_ – also from Part 3) into _Hexagonal Architecture_. First, each _service_ is divided into a high-level logic and low-level implementation details layers in a way similar to the one described above for turning a monolith into _Hexagonal Architecture_. Then, the upper actors that contain the business logic belonging to the individual _services_ are merged into a unified synchronous _domain model_.
 
-
-![alt_text](images/image5.png "image_tooltip")
-
+![A transformation of Services to Hexagonal Architecture](./Services_to_Hexagon.png "A transformation of Services to Hexagonal Architecture")
 
 With _Hexagonal Architecture_, the business logic resides in the upper layer. It is possible to reverse this setup:
 
 ### Gateway [[MP](#MP)] (system model over domain services)
 
-
-![alt_text](images/image6.png "image_tooltip")
-
+![A strctural diagram for Gateway](./Gateway.png "A strctural diagram for Gateway")
 
 **_Isolating the system from its users_**. A thin system model layer is added over a set of services. The model encapsulates the services by providing a firewall and authentication functionality to the system, translating incoming requests to an internal data format, routing those requests to services of interest, and possibly aggregating responses from several services (_Mediator_ [[SAP](#SAP)] – see the _Orchestrators_ pattern below). This makes the system of services appear as a single service to the external world and reduces its attack surface.
 
@@ -183,9 +171,7 @@ The only case remaining with the same structural diagram appears when the busine
 
 ### Application Service (domain model over domain services)
 
-
-![alt_text](images/image7.png "image_tooltip")
-
+![A structural diagram for Application Service](./Application_Service.png "A structural diagram for Application Service")
 
 > _(The domain services may or may not communicate directly)_
 
@@ -225,9 +211,7 @@ Here, the domain services have more abstract (i.e. high-level) logic than that o
 
 ### Middleware (domain services over a system model)
 
-
-![alt_text](images/image8.png "image_tooltip")
-
+![A structural diagram for Middleware](./Middleware.png "A structural diagram for Middleware")
 
 **_Sharing a transport to simplify operations. Services_** communicate via a dedicated transport layer that knows about all the system components (_Broker _[[POSA1](#POSA1), [EIP](#EIP)]) and lets them address each other (_Message Bus_ [[EIP](#EIP)]). A _middleware_ may guarantee message delivery, simplifying recovery in case of failures. It may also provide message logging, which is useful for debugging and regression testing, and may sometimes manage the _services_ by implementing recovery and scaling aspects.
 
@@ -257,9 +241,7 @@ The _message bus_ is usually excluded from architectural diagrams, as it: is ver
 
 ### Shared Repository [[POSA4](#POSA4)] (domain services over a domain _data_ model)
 
-
-![alt_text](images/image9.png "image_tooltip")
-
+![A structural diagram for Shared Repository](./Blackboard.png "A structural diagram for Shared Repository")
 
 > _(The services may or may not communicate directly)_
 
@@ -296,9 +278,7 @@ _Mesh_ (Part 5) provides a decentralized _middleware_ and sometimes also impleme
 
 ### Plug-ins [[SAP](#SAP)] (domain services over a domain model)
 
-
-![alt_text](images/image10.png "image_tooltip")
-
+![A structural diagram for Plug-ins](./Plug_Ins.png "A structural diagram for Plug-ins")
 
 **_Supervising or fine-tuning the behavior_**. A monolithic domain model is extended with higher-level services (_plug-ins_) that collect metadata and tune or customize the model’s behavior. The _plug-ins_ may be called synchronously (i.e. looped into the model’s business logic), be notified asynchronously (e.g. collecting statistics), or query the model at will (being a controller like an AI planner, etc.).
 
@@ -335,9 +315,7 @@ It is sometimes convenient to build a set of (often transient) _domain services_
 
 ### Microkernel [[POSA1](#POSA1)]
 
-
-![alt_text](images/image11.png "image_tooltip")
-
+![A structural diagram for Microkernel](./Microkernel.png "A structural diagram for Microkernel")
 
 **_Sharing the system resources among hordes of services_**. A system model (_microkernel_) provides means for custom _applications_ (_external services_) to communicate and access system resources owned by _drivers_ (_internal services_). Usually, the _microkernel_ also manages the _drivers_ and _applications_, making sure that the system survives the failures of its individual components.
 
@@ -378,9 +356,7 @@ _Half-Sync/Half-Async_ [[POSA2](#POSA2)], which was first discussed in Part 2 as
 
 ### Domain-Specific Language (DSL)
 
-
-![alt_text](images/image12.png "image_tooltip")
-
+![A structural diagram for DSL](./DSL.png "A structural diagram for DSL")
 
 > _(Scripts are usually transient)_
 
@@ -406,9 +382,7 @@ There is a variant where the lower layer consists of domain services, with an _A
 
 ### Orchestrators [[MP](#MP)]
 
-
-![alt_text](images/image13.png "image_tooltip")
-
+![A structural diagram for Orchestrators](./Orchestrators.png "A structural diagram for Orchestrators")
 
 > _(Orchestrators and Mediators are transient)_
 
@@ -464,9 +438,7 @@ However, there is one very special architecture unlike any other:
 
 ### [(Re)Actor-with-Extractors](http://ithare.com/multi-coring-and-non-blocking-instead-of-multi-threading-with-a-script/3/) (Day and Night)
 
-
-![alt_text](images/image14.png "image_tooltip")
-
+![A structural diagram for Day and Night](./Day_and_Night.png "A structural diagram for Day and Night")
 
 **_A lock-free shared memory interaction_**. This case comes from game development and allows for the efficient use of all the available CPU cores in systems that contain large numbers of closely interacting (accessing the data of each other), self-governed (with localized decision-making) entities. There is a _scheduler_ that uses a _thread pool_ (a thread per CPU core) to give each entity a chance to run once per _phase_. Once all the objects are served, the _phase_ is toggled. There are two kinds of _phases_:
 * Read phase (_Day_ or _Extract_): All the objects are read-only, thus allowing all their data and methods to be accessed without locking. The objects that are running call methods or read data from other objects they are interested in so as to read and store the data they need as input for their planning of future actions.
