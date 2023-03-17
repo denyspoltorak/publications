@@ -41,13 +41,13 @@ The other domain is the _application_ level, where different kinds of business _
 
 In this type of system, all the components have specific roles and are usually developed and deployed independently. This explains the granularity observed in the structure. However, from the viewpoint of business logic, it is mostly similar to a system of _services_ or _shards_ (both described in Part 3) that make up the application level; thus, the entire network layer tends to be excluded from architectural discussions once implemented or purchased.
 
-_Benefits _(in addition to those of _Services_, Part 3):
+_Benefits_ (in addition to those of _Services_, Part 3):
 * The system tolerates the loss of any component thanks to its decentralization and redundancy; this way, it can run on commodity hardware or even use the leftovers of CPU time at volunteers’ desktops worldwide.
 * The extra layer of _proxies_ allows for abstracting distributed resources, e.g. providing a virtual view of physically distributed data in _Space-Based Architecture_ and torrents.
 * Perfect scalability is achieved.
 * The unified transport interface simplifies development.
 
-_Drawbacks _(in addition to those of _Services_, Part 3):
+_Drawbacks_ (in addition to those of _Services_, Part 3):
 * Scenarios that involve multiple _applications_ may be tremendously hard to debug due to unstable failures at the network level.
 * Scenarios that involve multiple _applications_ may be unstable if _Mesh_ is run over an unreliable network or low-end hardware; therefore, shards of a single _application_ type must be interchangeable (either stateless or with replicated data) to provide redundant service capacity.
 * There is a high communication overhead that causes delays in messaging and slows down access to distributed resources for systems not limited to a single data center.
@@ -57,7 +57,7 @@ _Drawbacks _(in addition to those of _Services_, Part 3):
 
 _Summary_: _Mesh_ provides a shared virtual space over unreliable networks, often at the expense of communication speed and stable participants’ identities.
 
-_Common names_: Peer-to-peer / Ad-hoc Networks_._
+_Common names_: Peer-to-peer / Ad-hoc Networks.
 
 _System architecture_: **[Service Mesh](https://buoyant.io/service-mesh-manifesto)**, Space-Based Architecture [[SAP](#SAP)].
 
@@ -81,7 +81,7 @@ _Leaf-Spine Architecture_ provides fast, cheap and stable connectivity between s
 
 Here, all the _nodes_ are equal and able to find each other. Moreover, _proxy_ and _mesh_ components are merged together to optimize the single task the _P2P Network_ is specialized in.
 
-_P2P Networks _are used for fault tolerant communication and data exchange (torrent, onion, bitcoin).
+_P2P Networks_ are used for fault tolerant communication and data exchange (torrent, onion, bitcoin).
 
 ### Space-Based Architecture [[SAP](#SAP)]
 
@@ -122,11 +122,11 @@ _Evolution_:
 
 _Summary_: _SOA_ decreases the individual modules’ code complexity without introducing any code or data duplication among the modules at the cost of incurring overwhelming integration complexity and interdependency.
 
-_System architecture_: **[Service Oriented Architecture](https://patterns.arcitura.com/soa-patterns/basics/soamethodology/service_layers)**,** **Distributed Monolith (synchronous RPC calls) [[MP](#MP)].
+_System architecture_: **[Service Oriented Architecture](https://patterns.arcitura.com/soa-patterns/basics/soamethodology/service_layers)**,Distributed Monolith (synchronous RPC calls) [[MP](#MP)].
 
 This approach should have worked in an ideal world with perfect interteam communication and zero-cost distributability. Nevertheless, the method survived, mostly in automotive, avionics and legacy enterprises (that had put lots of resources into implementing _SOA_ while it was considered a brave new fashion).
 
-Why is _SOA_ still thriving in vehicle engineering? Probably because it allows the services to be dispersed over cheap, spatially distributed chips. If there are already physical black boxes being used for logging – why not use them as system-wide logger components? A brake chip placed near a wheel does not log anything to its own flash – it sends all the logs to a remote black box. And even if the black box fails, the brake will still be functional. The reliability of the CAN bus compared to that of the Internet could also have influenced the choices made in the industry, and the same could be said of the inherent modularity of car internals, which resembles the OOP principles _SOA_ was based on. Moreover, design committees in automotive, avionics and enterprise industries could well be banning any innovation for ages. Huge codebases in these domains should have been yet another driving force towards favoring _SOA _architectures.
+Why is _SOA_ still thriving in vehicle engineering? Probably because it allows the services to be dispersed over cheap, spatially distributed chips. If there are already physical black boxes being used for logging – why not use them as system-wide logger components? A brake chip placed near a wheel does not log anything to its own flash – it sends all the logs to a remote black box. And even if the black box fails, the brake will still be functional. The reliability of the CAN bus compared to that of the Internet could also have influenced the choices made in the industry, and the same could be said of the inherent modularity of car internals, which resembles the OOP principles _SOA_ was based on. Moreover, design committees in automotive, avionics and enterprise industries could well be banning any innovation for ages. Huge codebases in these domains should have been yet another driving force towards favoring _SOA_ architectures.
 
 Why did _SOA_ go extinct in other kinds of backends? Because _Microservices_ (detailed in Part 3) are way more independent in their development, deployment and production. This means less struggling with _ops_ (i.e. deployment and integration), less inter-team synchronization, minimal downtime and better performance. It is true that with _Microservices_, the code is less granular and sometimes duplicated, but the idea of reaching high granularity was the mistake discussed in Part 1; any attempts to distribute a coupled logic or cut it with asynchronous interfaces result in slow, unstable, and unsupportable systems that are hard to understand and nearly impossible to debug.
 
@@ -187,15 +187,15 @@ Having too many same-level _microservices_ (Part 3) complicates integration (inc
 
 This structure may incorporate elements of _Hexagonal Architecture_ and _Orchestrators_ (both from Part 4). _Application Services_ (Part 4) that feature high-level business logic may be used instead of _Gateways_ if the domain allows for a partially hierarchical decomposition.
 
-##Design Space
+## Design Space
 
 The _design space_ [[POSA1](#POSA1), [POSA5](#POSA5)] is an [imaginary](https://youtu.be/AnaQXJmpwM4?t=22) multidimensional set that contains all the possible architectures for all kinds of systems. It is multidimensional because every architecture has multiple parameters that may be changed, each parameter serving as a dimension of the solution space.
 
 However, humans have a hard time dealing with more than three dimensions. Therefore, we need a projection in order to confine our efforts to a couple of design aspects. This is exactly what has been done over the last 3 parts of this cycle with the **_ASS_** (_Abstraction, Subdomain, Sharding_) structural diagrams.
 
-I hope that all (or at least 95% of) the possible elementary system structures in _ASS_ coordinates have been described and analyzed. This means that _any_ reasonable software or system architecture should map to one of the patterns reviewed or a combination thereof when projected from the_ design space_ onto the _ASS_ coordinate system. Yes, most of the synchronous monoliths will look similar, since _ASS_ turns monoliths into dumb rectangles. Nevertheless, projecting a distributed system should reveal the structure that defines many of the system’s architectural properties.
+I hope that all (or at least 95% of) the possible elementary system structures in _ASS_ coordinates have been described and analyzed. This means that _any_ reasonable software or system architecture should map to one of the patterns reviewed or a combination thereof when projected from the _design space_ onto the _ASS_ coordinate system. Yes, most of the synchronous monoliths will look similar, since _ASS_ turns monoliths into dumb rectangles. Nevertheless, projecting a distributed system should reveal the structure that defines many of the system’s architectural properties.
 
-##Summary
+## Summary
 
 Most of the architectural patterns described in Parts 3 through 5 mix layers and services to balance and reconcile various aspects of _dev_ (module code) and _ops_ (integration of modules) complexities (see Part 1 for the definitions).
 
@@ -225,7 +225,7 @@ The patterns revisited in this series form a pattern system [[POSA1](#POSA1)] �
 
 The diagram only plots the main transitions between architectural patterns and is too complex to show the forces behind the pattern evolutions. Thus, the reader is advised to check the “Evolution” sections in the pattern descriptions in this series to get the full explanation.
 
-##References
+## References
 
 <a name="DDIA"/>
 
