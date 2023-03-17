@@ -272,7 +272,7 @@ These variations may be combined to fit one’s needs and budget. Beware of addi
 * Guidelines for interactions between actors were formulated.
 * Several variations of actors were described.
 
-Next, let’s look inside an actor. To be continued…
+Next, let’s look inside an actor. [To be continued…][Part 2]
 
 ## References
 

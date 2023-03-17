@@ -1,10 +1,10 @@
-_[Part](../README.md)_ 1 **2** 3 4 5
+_[Part](../README.md)_ [1][Part 1] **2** [3][Part 3] [4][Part 4] [5][Part 5]
 
 ---
 
 # Introduction to Software Architecture with Actors: Part 2 – On Handling Messages
 
-After defining actors and traversing the _design space_ [[POSA1](#POSA1), [POSA5](#POSA5)] for systems built of actors, it is time to look inside an actor to find out how it may work. However, first we’ll need to make a distinction between _control_ _flow_ and _data flow_.
+After [defining actors][Part 1] and traversing the _design space_ [[POSA1](#POSA1), [POSA5](#POSA5)] for systems built of actors, it is time to look inside an actor to find out how it may work. However, first we’ll need to make a distinction between _control_ _flow_ and _data flow_.
 
 - [Control Flow vs Data Flow](#control-flow-vs-data-flow)
 - [Monolith](#monolith)
@@ -141,11 +141,11 @@ _Drawbacks:_
 * If anything crashes, everything crashes (Users only have so much patience).
 
 _Evolution_:
-* If the business logic becomes unmanageable because of the project’s size, the monolith should be split into asynchronous _(Micro-)Services_, described in Part 3. This may also help with scalability.
-* The business logic can be isolated from the underlying platform, transports and 3rd party libraries by applying _Layers_ (from Part 3 of this series), followed by _Hexagonal Architecture_ (described in Part 4). This also has a limited positive effect on the project complexity and improves testability. Another good option is going for _Pipeline_ (Part 3), but that architecture only fits a specific subset of applications. 
-* Scalability and fault tolerance are achieved firstly by _sharding_ (Part 3), with finer control being possible through the use of such granular architectures as _Pipeline_ (Part 3), _SOA_ (Part 5) or even _Nanoservices_ (Part 3).
-* Contradictory non-functional requirements will lead to the fragmentation of the monolith into _Layers_ (Part 3), _Hexagonal Architecture_ (Part 4) and _Hexagonal Hierarchy_ (Part 5) or _(Micro-)Services_ (Part 3), probably over a _Shared Repository_ (Part 4), that may grow into a _Cell-Based Architecture_ (Part 5). Less common options include _Nanoservices_ (Part 3) and _SOA_ (Part 5).
-* Customizability is achieved with _Plug-Ins_ or _Domain-Specific Language_ (both from Part 4). _Pipeline_ (Part 3) is also a good option if it fits the project’s domain.
+* If the business logic becomes unmanageable because of the project’s size, the monolith should be split into asynchronous _(Micro-)Services_, described in [Part 3]. This may also help with scalability.
+* The business logic can be isolated from the underlying platform, transports and 3rd party libraries by applying _Layers_ (from [Part 3] of this series), followed by _Hexagonal Architecture_ (described in [Part 4]). This also has a limited positive effect on the project complexity and improves testability. Another good option is going for _Pipeline_ ([Part 3]), but that architecture only fits a specific subset of applications. 
+* Scalability and fault tolerance are achieved firstly by _sharding_ ([Part 3]), with finer control being possible through the use of such granular architectures as _Pipeline_ ([Part 3]), _SOA_ ([Part 5]) or even _Nanoservices_ ([Part 3]).
+* Contradictory non-functional requirements will lead to the fragmentation of the monolith into _Layers_ ([Part 3]), _Hexagonal Architecture_ ([Part 4]) and _Hexagonal Hierarchy_ ([Part 5]) or _(Micro-)Services_ ([Part 3]), probably over a _Shared Repository_ ([Part 4]), that may grow into a _Cell-Based Architecture_ ([Part 5]). Less common options include _Nanoservices_ ([Part 3]) and _SOA_ ([Part 5]).
+* Customizability is achieved with _Plug-Ins_ or _Domain-Specific Language_ (both from [Part 4]). _Pipeline_ ([Part 3]) is also a good option if it fits the project’s domain.
 
 It is noteworthy that the fact that “If anything crashes, everything crashes” is both a benefit and a drawback. Software architecture is all about making decisions with important benefits and ignorable drawbacks, while what exactly counts as important or ignorable depends on the project. That also holds true for the simplicity of software design – monoliths are easy to start coding, but as the project grows, they become hard to maintain and evolve. One should choose one’s method based on what is important now and what is expected to be important in the future. Everything has a cost.
 
@@ -165,7 +165,7 @@ Handling an incoming request/event triggers a chain of data processing operation
 
 > _(Parallel use cases are shown in colors)_
 
-**_A thread per task – imperative programming._** Every incoming request is served by a dedicated (for the duration of processing the request) thread, every call out of the _reactor_ (to the OS, over the network or into libraries) is blocking. Typically, multiple request handling threads are used (e.g. _Leader/Followers_ [[POSA2](#POSA2)] or _Thread Pool_ (_Master-Slave_ [[POSA1](#POSA1)]), both discussed in Part 3). Multithreaded reactors have to protect their state with mutexes, are indeterministic and may be considered the default approach for_ data-flow_-dominated systems (naive backend implementation). The basic request processing code is simple, but it is [hard](https://hillside.net/plop/2020/papers/poltorak.pdf) for one of the request processors to influence others (i.e., to cancel or edit a running request). Thus, a multithreaded reactor is a kind of simplistic _sharding_ (to be discussed in Part 3 of the publication).
+**_A thread per task – imperative programming._** Every incoming request is served by a dedicated (for the duration of processing the request) thread, every call out of the _reactor_ (to the OS, over the network or into libraries) is blocking. Typically, multiple request handling threads are used (e.g. _Leader/Followers_ [[POSA2](#POSA2)] or _Thread Pool_ (_Master-Slave_ [[POSA1](#POSA1)]), both discussed in [Part 3]). Multithreaded reactors have to protect their state with mutexes, are indeterministic and may be considered the default approach for_ data-flow_-dominated systems (naive backend implementation). The basic request processing code is simple, but it is [hard](https://hillside.net/plop/2020/papers/poltorak.pdf) for one of the request processors to influence others (i.e., to cancel or edit a running request). Thus, a multithreaded reactor is a kind of simplistic _sharding_ (to be discussed in [Part 3] of the publication).
 
 _Benefits:_
 * The code for use cases is simple.
@@ -218,7 +218,7 @@ _Drawbacks:_
 
 The upper half contains multiple _reactors_ (implemented by threads or coroutines) which block on calls to the underlying _proactor_. The proactor’s thread serves events from the system (OS, libs) and may also serve the calls from the reactors, acting as an RPC implementation layer. The system as a whole represents a middle ground between Reactor and Proactor; hence its description being placed alongside them.
 
-> _Half-Sync/Half-Async is, in actuality, Layers plus Sharding (both of which are approached in Part 3 of the publication) or, rather, a kind of Microkernel (from Part 4). However, as it is used for message handling, it is discussed here._
+> _Half-Sync/Half-Async is, in actuality, Layers plus Sharding (both of which are approached in [Part 3] of the publication) or, rather, a kind of Microkernel (from [Part 4]). However, as it is used for message handling, it is discussed here._
 
 **_Multithreading without multithreading – imperative tasks over a reactive engine._** When implemented with coroutines (a _coroutine_ is a call stack that does not own an execution thread), _Half-Sync/Half-Async_ keeps the benefits of single-threaded actors, namely: determinism and low resource consumption. In this case, a single execution thread switches between its original stack in the lower (proactor) half and multiple coroutine (reactor) stacks of tasks running in the upper half. Every incoming request is turned into an upper-half coroutine and run as a synchronous (blocking) chain of calls in the actor’s single thread. However, any blocking call from the synchronous scenario yields the thread to the lower non-blocking half instead of going into the OS kernel. And when the lower half gets a response from the OS to a request running on behalf of one of the upper half’s coroutines, it yields the execution thread to the coroutine in what looks like a return from a blocking call. Thus, _Half-Sync/Half-Async_ kind of reimplements OS threads, a runtime and a scheduler in user space.
 
@@ -260,7 +260,7 @@ Every request processing method uses RAM to store the task’s _state_ (progress
 * The most common approaches to request processing were analyzed in detail.
 * The interplay between the ways request states are stored, the possibility of running requests to interact and the complexity of business logic code were hinted at.
 
-In the subsequent installments, we’ll investigate the ways to split a monolith by asynchronous interfaces (or to assemble a system from several monoliths).
+In the [subsequent installments][Part 3], we’ll investigate the ways to split a monolith by asynchronous interfaces (or to assemble a system from several monoliths).
 
 ## References
 
@@ -288,8 +288,13 @@ In the subsequent installments, we’ll investigate the ways to split a monolith
 
 _Editor:_ [Josh Kaplan](mailto:joshkaplan66@gmail.com)
 
-_[Part](../README.md)_ 1 **2** 3 4 5
+_[Part](../README.md)_ [1][Part 1] **2** [3][Part 3] [4][Part 4] [5][Part 5]
 
 ---
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+[Part 1]: ../Part1/README.md
+[Part 3]: ../Part3/README.md
+[Part 4]: ../Part4/README.md
+[Part 5]: ../Part5/README.md

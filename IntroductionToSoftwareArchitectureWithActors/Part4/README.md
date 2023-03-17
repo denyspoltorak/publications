@@ -1,10 +1,10 @@
-_[Part](../README.md)_ 1 2 3 **4** 5
+_[Part](../README.md)_ [1][Part 1] [2][Part 2] [3][Part 3] **4** [5][Part 5]
 
 ---
 
 # Introduction to Software Architecture with Actors: Part 4 – On Systems with Models
 
-The previous part of the cycle was dedicated to the basic ways of splitting a monolith by messaging interfaces:
+The [previous part][Part 3] of the cycle was dedicated to the basic ways of splitting a monolith by messaging interfaces:
 
 1. Creating identical instances (**shards**) to scale the system under load, survive hardware failures, and enable synchronous outgoing calls (i.e. imperative programming  instead of reactive programming, which is the default paradigm for asynchronous systems).
   * _Precondition 1_: The data involved can be split into multiple subsets; most use cases operate on a single subset of the data.
@@ -47,7 +47,7 @@ This article investigates multiple ways of combining **layers** and **services**
 ## The Model
 Systems with monolithic (synchronous) layers covering the whole domain are ubiquitous. Let’s call any given example of such a layer a “**_model_**”. The layer may be present at various levels of abstraction and may vary in thickness (the amount of logic): from the largest component that encapsulates all of the project’s business logic (e.g. in _Hexagonal Architecture_) to a thin layer providing connectivity (like in _Middleware_). A thick domain-wide layer may be called a “**_domain model_**”, as it contains knowledge of domain entities and, possibly, their relations. A thin layer will usually focus on a system’s components and may thus be called a “**_system model_**”. In a similar way, there are **_domain services_** (microservices, domain actors) that implement subdomain business logic and **_resource services_** that provide abstractions for (virtualize) system resources.
 
-A model integrates information (control/data – see Part 2) flows over a system and sometimes links the data belonging to the subdomains involved; it unifies the components into a system and creates rules and means for the components to communicate.
+A model integrates information (control/data – see [Part 2]) flows over a system and sometimes links the data belonging to the subdomains involved; it unifies the components into a system and creates rules and means for the components to communicate.
 
 ## Π-shaped systems
 
@@ -80,16 +80,16 @@ _Drawbacks_:
 * The project’s start is slowed down slightly, as all the external dependencies must either be isolated by wrapping them with adapters or be mocked with stubs.
 
 _Evolution_:
-* As the project grows, _Hexagonal Architecture_ is likely to fall into _monolithic hell_ – a state of overwhelming code complexity that is caused by having too many people working on too large a module. The only way out is to split the _domain model_ into a set of smaller _domain services_. If the domain is hierarchical (i.e. there is a single subdomain that manages or uses other subdomains), the transition to _Application Service_ (see below) or more generic _Hexagonal Hierarchy_ (described in Part 5) will be available. In rare cases of mostly linear data processing, the _domain model_ may be turned into _Pipeline_ (see Part 3). Otherwise, it should be split into _(Micro-)Services_ (from Part 3). Hierarchical decomposition is usually preferable, as it decouples the business logic along both the _abstraction_ and the _subdomain_ dimensions, resulting in a more flexible and manageable architecture.
+* As the project grows, _Hexagonal Architecture_ is likely to fall into _monolithic hell_ – a state of overwhelming code complexity that is caused by having too many people working on too large a module. The only way out is to split the _domain model_ into a set of smaller _domain services_. If the domain is hierarchical (i.e. there is a single subdomain that manages or uses other subdomains), the transition to _Application Service_ (see below) or more generic _Hexagonal Hierarchy_ (described in [Part 5]) will be available. In rare cases of mostly linear data processing, the _domain model_ may be turned into _Pipeline_ (see [Part 3]). Otherwise, it should be split into _(Micro-)Services_ (from [Part 3]). Hierarchical decomposition is usually preferable, as it decouples the business logic along both the _abstraction_ and the _subdomain_ dimensions, resulting in a more flexible and manageable architecture.
 * A need for fine-tuned customization may be solved by building _Plug-Ins_ or _Domain-Specific Language_ (both described below) on top of the _domain model_ of _Hexagonal Architecture_.
-* When contradictory non-functional requirements arise, the business logic should be split just as it would be for dealing with the _monolithic hell_ described above. However, if the project is not very complex and the domain is not strongly coupled, there is the option of going for _Nanoservices_ (Part 3) and _Microkernel_ (described below).
+* When contradictory non-functional requirements arise, the business logic should be split just as it would be for dealing with the _monolithic hell_ described above. However, if the project is not very complex and the domain is not strongly coupled, there is the option of going for _Nanoservices_ ([Part 3]) and _Microkernel_ (described below).
 * Scalability may be achieved by either sharding the _domain model_ or dispersing it into _Nanoservices_ over _Microkernel_, with fault tolerance as an additional benefit.
 
 _Summary_: _Hexagonal Architecture_ brings with it many significant benefits when used for projects of a medium size and lifespan. However, small projects will be delayed by the extra effort required to code the interfaces and adapters, while huge projects will still suffer from _monolithic hell_ [[MP](#MP)] in the _domain model_ layer.
 
 Hexagonal architecture is derived from a monolith through the following steps:
-1. _Layers_ (from Part 3) are applied to split the high-level business logic from the low-level implementation details. The lower layer is called the _AntiCorruption Layer_ [[DDD](#DDD)] because it isolates the business logic from the details and changes in the integrated 3rd party components.
-2. _Services_ (also from Part 3) are applied to the lower layer so that every external dependency is wrapped with a dedicated _adapter_ module, making it easy to replace or update individual 3rd party components.
+1. _Layers_ (from [Part 3]) are applied to split the high-level business logic from the low-level implementation details. The lower layer is called the _AntiCorruption Layer_ [[DDD](#DDD)] because it isolates the business logic from the details and changes in the integrated 3rd party components.
+2. _Services_ (also from [Part 3]) are applied to the lower layer so that every external dependency is wrapped with a dedicated _adapter_ module, making it easy to replace or update individual 3rd party components.
 
 The resulting architecture is both more convenient than pure _Services_ (_domain actors_) and more flexible than _Layers_, combining the benefits of both patterns. The costs are:
 * There is no significant reduction in domain complexity (unlike that provided by vanilla _Services_)
@@ -101,7 +101,7 @@ _Software architecture_: [Ports and Adapters](https://alistair.cockburn.us/hexag
 
 _System architecture_: **[Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)**, [Onion Architecture](https://herbertograca.com/2017/09/21/onion-architecture/), [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
-_The diagram does not look like Hexagonal Architecture!_ All the structural diagrams in this series are drawn in Cartesian _ASS_ coordinates (described in Part 3), whereas typical drawings for _Hexagonal Architecture_ use polar coordinates with reverse abstraction for distance and subdomain for angle:
+_The diagram does not look like Hexagonal Architecture!_ All the structural diagrams in this series are drawn in Cartesian _ASS_ coordinates (described in [Part 3]), whereas typical drawings for _Hexagonal Architecture_ use polar coordinates with reverse abstraction for distance and subdomain for angle:
 
 ![Polar to Cartesian coordinates transformation for Hexagonal Architecture](./Hex_Coordinates_Vertical.png "Polar to Cartesian coordinates transformation for Hexagonal Architecture")
 
@@ -127,13 +127,13 @@ According to [[POSA1](#POSA1)], _MVC_ separates a _model_ (logic) from a user in
 * The option of allowing the UI to be changed without touching the main business logic, the same freedom that holds for the _adapters_ in _Hexagonal Architecture_.
 * The ease of porting the UI to new platforms, which is similar to the protection from _vendor lock-in_ in _Hexagonal Architecture_.
 
-Noticeably, the two old famous architectural patterns that feature nearly identical _ASS_ (structural – see Part 3) diagrams _serve similar goals _and_ provide similar benefits_.
+Noticeably, the two old famous architectural patterns that feature nearly identical _ASS_ (structural – see [Part 3]) diagrams _serve similar goals _and_ provide similar benefits_.
 
-The structural diagram for _MVC_ also bears a resemblance to the one for _Pipeline_ (Part 3); both feature unidirectional control flows and pairs of low-level components (_source_ and _sink_), though in _Pipeline_ architecture, the upper (business logic) layer contains multiple modules (_filters_). Thus, _Pipeline and Hexagonal Architecture are related_. If a project that was designed as a pipeline gets new requirements that make its _filters_ interdependent, or if there is a need for the ultimate optimization of performance and response time, the logic-containing _filters_ may be merged into a synchronous _model_, thus violating the original _Pipeline_ architecture and transforming it into a _Hexagonal Architecture_. Such an experience would mean that the original understanding of the project’s domain or forces (non-functional requirements) was incorrect, but, luckily, _Pipeline_ architecture is flexible enough to be reshaped at late stages of the project.
+The structural diagram for _MVC_ also bears a resemblance to the one for _Pipeline_ ([Part 3]); both feature unidirectional control flows and pairs of low-level components (_source_ and _sink_), though in _Pipeline_ architecture, the upper (business logic) layer contains multiple modules (_filters_). Thus, _Pipeline and Hexagonal Architecture are related_. If a project that was designed as a pipeline gets new requirements that make its _filters_ interdependent, or if there is a need for the ultimate optimization of performance and response time, the logic-containing _filters_ may be merged into a synchronous _model_, thus violating the original _Pipeline_ architecture and transforming it into a _Hexagonal Architecture_. Such an experience would mean that the original understanding of the project’s domain or forces (non-functional requirements) was incorrect, but, luckily, _Pipeline_ architecture is flexible enough to be reshaped at late stages of the project.
 
 ![A transformation of Pipeline to Hexagonal Architecture](./Pipeline_to_Hexagonal.png "A transformation of Pipeline to Hexagonal Architecture")
 
-A [little more work](https://hillside.net/plop/2020/papers/poltorak.pdf) is needed to turn _domain actors_ (_Services_ – also from Part 3) into _Hexagonal Architecture_. First, each _service_ is divided into a high-level logic and low-level implementation details layers in a way similar to the one described above for turning a monolith into _Hexagonal Architecture_. Then, the upper actors that contain the business logic belonging to the individual _services_ are merged into a unified synchronous _domain model_.
+A [little more work](https://hillside.net/plop/2020/papers/poltorak.pdf) is needed to turn _domain actors_ (_Services_ – also from [Part 3]) into _Hexagonal Architecture_. First, each _service_ is divided into a high-level logic and low-level implementation details layers in a way similar to the one described above for turning a monolith into _Hexagonal Architecture_. Then, the upper actors that contain the business logic belonging to the individual _services_ are merged into a unified synchronous _domain model_.
 
 ![A transformation of Services to Hexagonal Architecture](./Services_to_Hexagon.png "A transformation of Services to Hexagonal Architecture")
 
@@ -145,17 +145,17 @@ With _Hexagonal Architecture_, the business logic resides in the upper layer. It
 
 **_Isolating the system from its users_**. A thin system model layer is added over a set of services. The model encapsulates the services by providing a firewall and authentication functionality to the system, translating incoming requests to an internal data format, routing those requests to services of interest, and possibly aggregating responses from several services (_Mediator_ [[SAP](#SAP)] – see the _Orchestrators_ pattern below). This makes the system of services appear as a single service to the external world and reduces its attack surface.
 
-_Benefits_ (in addition to those of _Services_, described in Part 3):
+_Benefits_ (in addition to those of _Services_, described in [Part 3]):
 * The system is encapsulated by a _gateway_ that reduces the attack surface (from _Layers_).
 * It is easy to support multiple client protocols, as the clients interact with a dedicated external communication module (_gateway_) that encapsulates the protocol translation and always queries the _domain_ _services_ using an internal protocol (from _Layers_).
 
-_Drawbacks_ (in addition to those of _Services_ from Part 3):
+_Drawbacks_ (in addition to those of _Services_ from [Part 3]):
 * The _gateway_ causes some performance degradation (from _Layers_).
 * The _gateway_ may be a single point of failure (from _Layers_).
 
 _Evolution_:
 * If the business logic becomes coupled, the _gateway_ may incorporate support for _orchestrators_ (see below).
-* When having too many services independently developed and deployed resembles a nightmare, the services should be gathered into groups (_Cell-Based Architecture_, mentioned in Part 5), with each group encapsulated by a dedicated _gateway_.
+* When having too many services independently developed and deployed resembles a nightmare, the services should be gathered into groups (_Cell-Based Architecture_, mentioned in [Part 5]), with each group encapsulated by a dedicated _gateway_.
 
 _Summary_: A _gateway_ isolates the system from external clients in a role similar to that of an _adapter_ from _Hexagonal Architecture_, making it easy to support new client technologies and new types of clients without modifying the main business logic.
 
@@ -190,8 +190,8 @@ _Drawbacks_:
 
 _Evolution_:
 * If the business logic becomes coupled, the _application service_ may incorporate support for _orchestrators_ (see below).
-* If the _application service_ itself grows into a monolithic hell, it should either be split into _Hexagonal Hierarchy_ (implementable for hierarchical domains) or become a kind of _Cell-Based Architecture_, both mentioned in Part 5.
-* If a new set of use cases appear that are representable under the current domain abstraction being used by the existing _application service,_ then a new implementation of _application service_ may be added to cover the new use cases. This efficiently turns the _Application Service_ architecture into _Service-Oriented Architecture_ (see Part 5).
+* If the _application service_ itself grows into a monolithic hell, it should either be split into _Hexagonal Hierarchy_ (implementable for hierarchical domains) or become a kind of _Cell-Based Architecture_, both mentioned in [Part 5].
+* If a new set of use cases appear that are representable under the current domain abstraction being used by the existing _application service,_ then a new implementation of _application service_ may be added to cover the new use cases. This efficiently turns the _Application Service_ architecture into _Service-Oriented Architecture_ (see [Part 5]).
 
 _Summary_: _Application Service_ is a natural domain decomposition in cases where one subdomain supervises the other subdomains. It may greatly decouple business logic for huge projects at the cost of increasing operational and debugging complexity.
 
@@ -201,7 +201,7 @@ _Software architecture_: Human-Machine Interface.
 
 _System architecture_: [Task Service Layer](https://patterns.arcitura.com/soa-patterns/basics/soamethodology/service_layers).
 
-This structure is a basic _Hierarchy_ (that may be built up by adding more layers of services) or an underdeveloped _SOA_ (which emerges when several different _application services_ are formed). Both systems are described in Part 5 and are known to be able to mitigate domain complexity, showing the possible ways of evolving a project as it grows.
+This structure is a basic _Hierarchy_ (that may be built up by adding more layers of services) or an underdeveloped _SOA_ (which emerges when several different _application services_ are formed). Both systems are described in [Part 5] and are known to be able to mitigate domain complexity, showing the possible ways of evolving a project as it grows.
 
 If the diagram is inverted along the _abstraction_ axis, it turns into:
 
@@ -215,29 +215,29 @@ Here, the domain services have more abstract (i.e. high-level) logic than that o
 
 **_Sharing a transport to simplify operations. Services_** communicate via a dedicated transport layer that knows about all the system components (_Broker_ [[POSA1](#POSA1), [EIP](#EIP)]) and lets them address each other (_Message Bus_ [[EIP](#EIP)]). A _middleware_ may guarantee message delivery, simplifying recovery in case of failures. It may also provide message logging, which is useful for debugging and regression testing, and may sometimes manage the _services_ by implementing recovery and scaling aspects.
 
-_Benefits_ (in addition to those of _Services_, Part 3):
+_Benefits_ (in addition to those of _Services_, [Part 3]):
 * It allows a faster start to the project, as the transport layer (possibly with such _ops_ functions as scaling and recovery) is usually available out of the box.
 * The connectivity is less complex thanks to the presence of a uniform protocol and the system model (_Broker_).
 * It simplifies failure recovery, as a _middleware_ usually provides message delivery guarantees and may restart failed services.
 
-_Drawbacks_ (in addition to those of _Services_, Part 3):
+_Drawbacks_ (in addition to those of _Services_, [Part 3]):
 * A generic _middleware_ may not provide the optimal means of communication for every connection in the system.
 * _Broker_ topology may slow down messaging to some extent.
 * The _broker_ may become a single point of failure.
 
 _Evolution_:
 * _Microkernel_ implementations, such as Akka or Erlang/Elixir, can be used as a _middleware_ for projects that require good scalability and fine-tuned fault tolerance.
-* _Service Mesh_ (Part 5) can be used as a _middleware_ with the ability to translate between various message formats and transports.
+* _Service Mesh_ ([Part 5]) can be used as a _middleware_ with the ability to translate between various message formats and transports.
 
 _Summary_: _Middleware_ is very common when a relatively high number of services need to communicate – in that case, supporting communication channels between each pair of services becomes impractical. It does not add any significant architectural benefits or drawbacks to the system it serves.
 
-_Publish-subscribe_ engines may be considered a kind of _middleware_, and they may be present even in embedded devices. A similar _middleware_ option for systems of local actors is sending messages without explicitly setting destination actors; in this case, every type of message is delivered to a dedicated global subscriber (this was also briefly mentioned in Part 1).
+_Publish-subscribe_ engines may be considered a kind of _middleware_, and they may be present even in embedded devices. A similar _middleware_ option for systems of local actors is sending messages without explicitly setting destination actors; in this case, every type of message is delivered to a dedicated global subscriber (this was also briefly mentioned in [Part 1]).
 
 _Software architecture_: Middleware.
 
 _System architecture_: (Message) **Broker** [[POSA1](#POSA1), [EIP](#EIP), [MP](#MP)], Message Bus [[EIP](#EIP)], Enterprise Service Bus (also manages services and translates payload formats).
 
-The _message bus_ is usually excluded from architectural diagrams, as it: is very common, does not influence business logic, and does not change the system’s properties. Aside from specialized _Middleware _frameworks_,_ similar functionality is provided by decentralized _meshes_ (Part 5) and resource-sharing _microkernels_ (see below).
+The _message bus_ is usually excluded from architectural diagrams, as it: is very common, does not influence business logic, and does not change the system’s properties. Aside from specialized _Middleware _frameworks_,_ similar functionality is provided by decentralized _meshes_ ([Part 5]) and resource-sharing _microkernels_ (see below).
 
 ### Shared Repository [[POSA4](#POSA4)] (domain services over a domain _data_ model)
 
@@ -261,10 +261,10 @@ _Drawbacks_:
 * The shared _data layer_ implementation may not fit all the services equally well.
 
 _Evolution_:
-* As the workload and amount of stored data grows, the shared database will likely become a bottleneck. Two solutions are possible: going for vanilla _Services_ (from Part 3) that don’t share any data, or relying on a distributed _data plane_ of _Space-Based Architecture_ (mentioned in Part 5).
+* As the workload and amount of stored data grows, the shared database will likely become a bottleneck. Two solutions are possible: going for vanilla _Services_ (from [Part 3]) that don’t share any data, or relying on a distributed _data plane_ of _Space-Based Architecture_ (mentioned in [Part 5]).
 * The _shared repository_ may strongly couple the implementation and properties of the services that use it. Decoupling the services requires that they stop sharing data.
 
-_Summary_: _Shared Repository_ sacrifices many of the benefits of _Services_ for a quick start on the project and the simplicity of its development. It holds its ground against _Monolith_ (Part 2) when diverse use cases require the system to manifest contradictory properties, e.g. in basic combined OLTP + OLAP applications.
+_Summary_: _Shared Repository_ sacrifices many of the benefits of _Services_ for a quick start on the project and the simplicity of its development. It holds its ground against _Monolith_ ([Part 2]) when diverse use cases require the system to manifest contradictory properties, e.g. in basic combined OLTP + OLAP applications.
 
 Synchronous access to a _shared repository_ makes the actor system violate the actor model by sharing the state between actors. In this case, the _data layer_ should take care to resolve probable deadlocks.
 
@@ -274,7 +274,7 @@ _System architecture_: **Shared Database**, Smart UI [[DDD](#DDD)], Shared Repos
 
 Both _Shared Repository_ and _Middleware_ provide means of communication to a system of services, have similar structural diagrams, and share many benefits and drawbacks – here, once again, the correlation between a structure and its properties becomes prominent.
 
-_Mesh_ (Part 5) provides a decentralized _middleware_ and sometimes also implements a _shared repository_ (called _Space-Based Architecture_) with physically distributed hardware.
+_Mesh_ ([Part 5]) provides a decentralized _middleware_ and sometimes also implements a _shared repository_ (called _Space-Based Architecture_) with physically distributed hardware.
 
 ### Plug-ins [[SAP](#SAP)] (domain services over a domain model)
 
@@ -338,11 +338,11 @@ _Drawbacks_:
 * _Microkernel_ is often implemented as a virtual machine, slowing down the running of applications.
 
 _Evolution_:
-* A distributed microkernel can be implemented with _Service Mesh_ (Part 5). However, as the implementation is very nontrivial, a 3rd party product is used in most cases.
+* A distributed microkernel can be implemented with _Service Mesh_ ([Part 5]). However, as the implementation is very nontrivial, a 3rd party product is used in most cases.
 
-_Summary_: _Microkernel_ architecture manages the use of limited resources by untrusted applications and provides them with connectivity, often supporting large numbers of independent or interacting actors and providing the means to build supervision hierarchies for error recovery. It originates with operating systems and is mostly limited to system software (OS, virtualization, distributed FS) because of the high infrastructure development cost and performance penalty imposed on accessing distributed goods. On the other hand, yet another custom _Microkernel_ implementation may become a framework for _SOA_ (Part 5), which is even more heavy-weight and sluggish.
+_Summary_: _Microkernel_ architecture manages the use of limited resources by untrusted applications and provides them with connectivity, often supporting large numbers of independent or interacting actors and providing the means to build supervision hierarchies for error recovery. It originates with operating systems and is mostly limited to system software (OS, virtualization, distributed FS) because of the high infrastructure development cost and performance penalty imposed on accessing distributed goods. On the other hand, yet another custom _Microkernel_ implementation may become a framework for _SOA_ ([Part 5]), which is even more heavy-weight and sluggish.
 
-_Microkernel_ may be regarded as multiple _Hexagonal Architectures_ sharing a set of _adapters_ via a common _middleware_ or as a _Middleware-Gateway_ system where the _microkernel_ serves as both a _gateway_ to _drivers_ and a _middleware_ to _applications_. A distributed _Microkernel_ is related to _Mesh_ (Part 5), which also provides virtualization for system resources.
+_Microkernel_ may be regarded as multiple _Hexagonal Architectures_ sharing a set of _adapters_ via a common _middleware_ or as a _Middleware-Gateway_ system where the _microkernel_ serves as both a _gateway_ to _drivers_ and a _middleware_ to _applications_. A distributed _Microkernel_ is related to _Mesh_ ([Part 5]), which also provides virtualization for system resources.
 
 _Common names_: Runtime, User Space, Applications, Coroutines.
 
@@ -350,9 +350,9 @@ _Software architecture_: **Microkernel** [[POSA1](#POSA1)], Half-Sync/Half-Async
 
 _System architecture_: **Containers**, Actors Framework.
 
-Containerization software and Akka and Erlang runtimes are examples of distributed _Microkernel_ frameworks and are used out of the box for cloud applications, some of which run [millions](https://youtu.be/bo5WL5IQAd0?t=2694) of _Nanoservices_ (Part 3) with a dedicated actor instance for each user in a banking, telephony, transportation, instant messaging or online gaming network. An OS is a kind of _Microkernel_. In most cases, the _microkernel_ and everything below it is skipped in drawing architectural diagrams.
+Containerization software and Akka and Erlang runtimes are examples of distributed _Microkernel_ frameworks and are used out of the box for cloud applications, some of which run [millions](https://youtu.be/bo5WL5IQAd0?t=2694) of _Nanoservices_ ([Part 3]) with a dedicated actor instance for each user in a banking, telephony, transportation, instant messaging or online gaming network. An OS is a kind of _Microkernel_. In most cases, the _microkernel_ and everything below it is skipped in drawing architectural diagrams.
 
-_Half-Sync/Half-Async_ [[POSA2](#POSA2)], which was first discussed in Part 2 as an implementation of _monolithic_ applications then revisited in Part 3 as a _layered_ pattern, appears, on closer inspection, to be _Microkernel_. Indeed, both patterns describe an OS with applications and drivers, the main difference being that _Half-Sync/Half-Async_ does not discern individual drivers in the OS layer. With the coroutine implementation of _Half-Sync/Half-Async_, the coroutine engine stands for the _microkernel_, async event handlers are _internal services_, and the coroutines match _external service_ components.
+_Half-Sync/Half-Async_ [[POSA2](#POSA2)], which was first discussed in [Part 2] as an implementation of _monolithic_ applications then revisited in [Part 3] as a _layered_ pattern, appears, on closer inspection, to be _Microkernel_. Indeed, both patterns describe an OS with applications and drivers, the main difference being that _Half-Sync/Half-Async_ does not discern individual drivers in the OS layer. With the coroutine implementation of _Half-Sync/Half-Async_, the coroutine engine stands for the _microkernel_, async event handlers are _internal services_, and the coroutines match _external service_ components.
 
 ### Domain-Specific Language (DSL)
 
@@ -378,7 +378,7 @@ _Software architecture_: Interpreter [[GoF](#GoF)].
 
 Prominent examples include game scripts, Blender scripts and even SQL. A very special case of a script is a config file, which is executed once on system startup. A CLI is yet another common example.
 
-There is a variant where the lower layer consists of domain services, with an _ASS_ diagram (Part 3) similar to that of _Microkernel_. In that case, the _interpreter_ is also a _gateway_ for the _internal services_, while the _scripts_ manage the distributed system. An example would be CLI and configuration tools for distributed systems or containerization software. Such an architecture is somewhat related to:
+There is a variant where the lower layer consists of domain services, with an _ASS_ diagram ([Part 3]) similar to that of _Microkernel_. In that case, the _interpreter_ is also a _gateway_ for the _internal services_, while the _scripts_ manage the distributed system. An example would be CLI and configuration tools for distributed systems or containerization software. Such an architecture is somewhat related to:
 
 ### Orchestrators [[MP](#MP)]
 
@@ -408,7 +408,7 @@ _Drawbacks_:
 _Evolution_:
 * As the complexity of distributed use cases grows, a transition to _Application Service_ or _Hexagonal Architecture_ (see above) may be considered.
 
-_Summary_: _Orchestrators_ counter the main drawback of _(Micro-)Services_ (described in Part 3), namely the trouble with use cases that involve several subdomains. They even allow for distributed transactions (_sagas_ [[MP](#MP)]). As splitting to services is the only way to counter domain complexity, _Orchestrators_ are likely to emerge in huge projects. However, they are both much more irksome than synchronous method calls in a monolith (or in the model in a _Hexagonal Architecture_) and tend to somewhat limit the independence of the _services’_ non-functional properties.
+_Summary_: _Orchestrators_ counter the main drawback of _(Micro-)Services_ (described in [Part 3]), namely the trouble with use cases that involve several subdomains. They even allow for distributed transactions (_sagas_ [[MP](#MP)]). As splitting to services is the only way to counter domain complexity, _Orchestrators_ are likely to emerge in huge projects. However, they are both much more irksome than synchronous method calls in a monolith (or in the model in a _Hexagonal Architecture_) and tend to somewhat limit the independence of the _services’_ non-functional properties.
 
 _Services with Orchestrators_ is derived from a monolith in the following steps:
 1. The monolith is split into _subdomain_ _services_, escaping _monolithic hell_ [[MP](#MP)].
@@ -459,7 +459,7 @@ This part discussed the following kinds of systems that feature monolithic layer
 
 Many names for mostly identical structures were mentioned. [The Rule of Three](https://wiki.c2.com/?ThingsInThrees) was observed thrice.
 
-The next (and final) part is dedicated to fragmented architectures that contain no single module that spreads over the entire system.
+The [next (and final) part][Part 5] is dedicated to fragmented architectures that contain no single module that spreads over the entire system.
 
 ## References
 
@@ -507,8 +507,13 @@ The next (and final) part is dedicated to fragmented architectures that contain 
 
 _Editor:_ [Josh Kaplan](mailto:joshkaplan66@gmail.com)
 
-_[Part](../README.md)_ 1 2 3 **4** 5
+_[Part](../README.md)_ [1][Part 1] [2][Part 2] [3][Part 3] **4** [5][Part 5]
 
 ---
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
+[Part 1]: ../Part1/README.md
+[Part 2]: ../Part2/README.md
+[Part 3]: ../Part3/README.md
+[Part 5]: ../Part5/README.md
