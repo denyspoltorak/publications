@@ -19,7 +19,7 @@ Now, according to the _[Rule-of-Three](https://en.wikipedia.org/wiki/Planescape#
 - [Hierarchy](#hierarchy)
   - [Hexagon of Hexagons (Hexagonal Hierarchy)](#hexagon-of-hexagons-hexagonal-hierarchy)
   - [Bus of Buses (Hierarchy of Networks)](#bus-of-buses-hierarchy-of-networks)
-  - [Services of Services (Cell-Based Architecture)](#services-of-services-call-based-architecture)
+  - [Services of Services (Cell-Based Architecture)](#services-of-services-cell-based-architecture)
 - [Design Space](#design-space)
 - [Summary](#summary)
 - [The Pattern Language](#the-pattern-language)
@@ -29,9 +29,7 @@ Now, according to the _[Rule-of-Three](https://en.wikipedia.org/wiki/Planescape#
 
 Cutting a monolith along all the axes under discussion (_abstraction_, _subdomain_, _sharding_ – see Part 3) simultaneously does not make much sense, as the resulting structure is too hard to manage, that is, unless it relies on communication between shards to form a _mesh_.
 
-
-![alt_text](images/image1.png "image_tooltip")
-
+![Meshes](./Mesh_Variants.png "Meshes")
 
 **_A customizable distributed middleware for unreliable networks_**. The lower layer of services implements network connectivity, while the upper services contain the business logic. Two domains, namely, _application_ and _network_, are present.
 
@@ -95,9 +93,7 @@ Here, once again, a family of related distributed implementations (_Meshes_) tar
 
 The preceding structure (_Mesh_) had deep sharding, explicit layers (application, proxy, connectivity) and subdomains (application support and network topology), and few component types. If those restrictions are lifted, the [chaos](http://www.soa-manifesto.org/default.html) emerges:
 
-
-![alt_text](images/image2.png "image_tooltip")
-
+![SOA](./Distributed_Modules.png "SOA")
 
 **_Sacrificing everything for modularity_**. If the modules of a _monolith_ (Part 2) are distributed over a network, the result is, surprisingly, a _distributed monolith_ [[MP](#MP)] for synchronous RPC calls or a _service-oriented architecture_ (_SOA_) for asynchronous communication.
 
@@ -134,9 +130,7 @@ Why did _SOA_ go extinct in other kinds of backends? Because _Microservices_ (de
 
 The last pattern to be discussed is more of an approach than a well-defined composition of modules.
 
-
-![alt_text](images/image3.png "image_tooltip")
-
+![Hierarchies](./Hierarchies.png "Hierarchies")
 
 **_Using recursive modularity and polymorphism to curb complexity_**. A pattern is applied recursively, often resulting in a tree-like structure with a relatively small amount of very high-level logic managing multiple, in many cases polymorphic, modules of an intermediate abstraction level, each of which supervises a set of concrete services or devices.
 
@@ -219,9 +213,7 @@ There is a paradox that the most important decisions must be made at the early s
 
 The patterns revisited in this series form a pattern system [[POSA1](#POSA1)] – a classification of architectural patterns, in our case – according to their structure in _ASS_ coordinates (Part 3). However, people love pattern languages [[POSA2](#POSA2)]; thus, there is a need to show how the architectural patterns are connected and how the architectures may be transformed under various forces. It should be noted that most of the transformations are reversible should forces change, e.g. eagerly escaping a monolithic hell may lead straight into a distributed transactions nightmare or an [interactions inferno](https://www.doit.com/untangling-microservices-or-balancing-complexity-in-distributed-systems/).
 
-
-![alt_text](images/image4.png "image_tooltip")
-
+![The pattern language](./Pattern_Language_Evolution.png "The pattern language")
 
 The diagram only plots the main transitions between architectural patterns and is too complex to show the forces behind the pattern evolutions. Thus, the reader is advised to check the “Evolution” sections in the pattern descriptions in this series to get the full explanation.
 
@@ -233,7 +225,7 @@ The diagram only plots the main transitions between architectural patterns and i
 
 <a name="MP"/>
 
-[MP] Microservices Patterns: With Examples in Java. _Chris Richardson._ _Manning Publications (2018)_.
+[MP] Microservices Patterns: With Examples in Java. _Chris Richardson. Manning Publications (2018)_.
 
 <a name="POSA1"/>
 
