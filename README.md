@@ -1,5 +1,5 @@
 # publications
-[Architectural Metapatterns](./ArchitecturalMetapatterns/Architectural Metapatterns.pdf). _ITNEXT_, 2024.
+[Architectural Metapatterns](./ArchitecturalMetapatterns/Architectural%20Metapatterns.pdf). _ITNEXT_, 2024.
 
 [Introduction to Software Architecture with Actors](./IntroductionToSoftwareArchitectureWithActors/README.md). _ITNEXT_, 2023.
 
