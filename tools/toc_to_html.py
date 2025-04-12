@@ -47,7 +47,8 @@ def dump(html, nodes, level, begin, end):
                 html.append(prefix + '<ul>')
                 i = dump(html, nodes, nodes[i].level, i, end)
                 html.append(prefix + '</ul>')
-            # i could have changed, reevaluate
+        # i could have changed, reevaluate
+        if i < end:
             assert(nodes[i].level <= level)
             if nodes[i].level < level:
                 # Jump up the ToC
@@ -68,7 +69,7 @@ def convert(text):
     dump(html, nodes, 0, 0, len(nodes))
 
     # footer
-    html.append('<ul>')
+    html.append('</ul>')
 
     return html
 
